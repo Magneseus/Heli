@@ -13,70 +13,85 @@
 #include "OIS/OIS.h"
 
 namespace ogre_application {
-
-
 	/* A useful type to define */
 	typedef std::vector<Ogre::String> Strings;
 
 	/* Our exception type */
 	class OgreAppException: public std::exception
     {
-		private:
-		    std::string message_;
-	    public:
-			OgreAppException(std::string message) : message_(message) {};
-			virtual const char* what() const throw() { return message_.c_str(); };
+	private:
+		std::string message_;
+	public:
+		OgreAppException(std::string message) : message_(message) {};
+		virtual const char* what() const throw() { return message_.c_str(); };
 	};
 
 	/* Our Ogre application */
 	class OgreApplication :
-	    public Ogre::FrameListener, // Derive from FrameListener to be able to have render event callbacks
-        public Ogre::WindowEventListener // Derive from FrameListener to be able to have window event callbacks
-		{
+	public Ogre::FrameListener, // Derive from FrameListener to be able to have render event callbacks
+    public Ogre::WindowEventListener // Derive from FrameListener to be able to have window event callbacks
+	{
 
-        public:
-            OgreApplication(void);
-			// Call Init() before running the main loop
-            void Init(void); 
-			// Create a torus and add it to the list of mesh resources
-			void CreateTorus(Ogre::String object_name, float loop_radius = 0.6, float circle_radius = 0.2, int num_loop_samples = 90, int num_circle_samples = 30);
-			// Create an instance of mesh "object_name"
-			// Return the scene node of the object so that we can edit its position in the world
-            Ogre::SceneNode* OgreApplication::CreateEntity(Ogre::String entity_name, Ogre::String object_name, Ogre::String material_name);
-			// Setup a specific rotation animation for an object
-            void SetupAnimation(Ogre::String object_name); 
-			// Keep application active
-            void MainLoop(void); 
+    public:
+        OgreApplication(void);
+		// Call Init() before running the main loop
+        void Init(void); 
+		// Keep application active
+        void MainLoop(void); 
 
-        private:
-			// Create root that allows us to access Ogre commands
-            std::auto_ptr<Ogre::Root> ogre_root_;
-            // Main Ogre window
-            Ogre::RenderWindow* ogre_window_;
+    private:
+		// Create root that allows us to access Ogre commands
+        std::auto_ptr<Ogre::Root> ogre_root_;
+        // Main Ogre window
+        Ogre::RenderWindow* ogre_window_;
 
-			// For animating an object
-			Ogre::AnimationState *animation_state_; // Keep state of the animation
-			bool animating_; // Whether animation is on or off
-			bool space_down_; // Whether space key was pressed
+		// Input managers
+		OIS::InputManager *input_manager_;
+		OIS::Mouse *mouse_;
+		OIS::Keyboard *keyboard_;
 
-			// Input managers
-			OIS::InputManager *input_manager_;
-			OIS::Mouse *mouse_;
-			OIS::Keyboard *keyboard_;
+		/* Methods to initialize the application */
+		void InitRootNode(void);
+		void InitPlugins(void);
+		void InitRenderSystem(void);
+		void InitWindow(void);
+		void InitViewport(void);
+		void InitEvents(void);
+		void InitOIS(void);
+		void LoadMaterials(void);
 
-			/* Methods to initialize the application */
-			void InitRootNode(void);
-			void InitPlugins(void);
-			void InitRenderSystem(void);
-			void InitWindow(void);
-			void InitViewport(void);
-			void InitEvents(void);
-			void InitOIS(void);
-			void LoadMaterials(void);
+		/* Methods to handle events */
+		bool frameRenderingQueued(const Ogre::FrameEvent& fe);
+		void windowResized(Ogre::RenderWindow* rw);
 
-			/* Methods to handle events */
-			bool frameRenderingQueued(const Ogre::FrameEvent& fe);
-			void windowResized(Ogre::RenderWindow* rw);
+	private:
+		/* Some configuration constants */
+		/* They are written here as global variables, but ideally they should be loaded from a configuration file */
+
+		/* Initialization */
+		const Ogre::String config_filename_g = "";
+		const Ogre::String plugins_filename_g = "";
+		const Ogre::String log_filename_g = "Ogre.log";
+
+		/* Main window settings */
+		const Ogre::String window_title_g = "Demo";
+		const Ogre::String custom_window_capacities_g = "";
+		const unsigned int window_width_g = 800;
+		const unsigned int window_height_g = 600;
+		const bool window_full_screen_g = false;
+
+		/* Viewport and camera settings */
+		float viewport_width_g = 0.95f;
+		float viewport_height_g = 0.95f;
+		float viewport_left_g = (1.0f - viewport_width_g) * 0.5f;
+		float viewport_top_g = (1.0f - viewport_height_g) * 0.5f;
+		unsigned short viewport_z_order_g = 100;
+		const Ogre::ColourValue viewport_background_color_g = Ogre::ColourValue(0.0, 0.0, 0.0);
+		float camera_near_clip_distance_g = 0.01f;
+		float camera_far_clip_distance_g = 100.0f;
+		Ogre::Vector3 camera_position_g = Ogre::Vector3(0.5, 0.5, 1.5);
+		Ogre::Vector3 camera_look_at_g = Ogre::Vector3(0.0, 0.0, 0.0);
+		Ogre::Vector3 camera_up_g = Ogre::Vector3(0.0, 1.0, 0.0);
 
     }; // class OgreApplication
 

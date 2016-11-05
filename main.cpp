@@ -13,14 +13,6 @@ int main(void){
 	try {
         // Initialize application
 		application.Init();
-        // Create a torus mesh and add it to the mesh resources
-		application.CreateTorus("TorusMesh");
-        // Create an instance of the torus mesh
-        Ogre::SceneNode* torus = application.CreateEntity("TorusInstance1", "TorusMesh", "ObjectMaterial");
-        // Scale the instance
-		torus->scale(0.5, 0.5, 0.5);
-		// Init animation
-		application.SetupAnimation("TorusInstance1");
         // Run application
 		application.MainLoop();
 	}
