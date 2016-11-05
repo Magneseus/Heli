@@ -78,9 +78,12 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 void OgreApplication::InitRootNode(void)
 {
     try {
-		
+		// Initialize log manager
+		lm = new Ogre::LogManager();
+		lm->createLog(log_filename_g, true, false, false);
+
 		/* We need to have an Ogre root to be able to access all Ogre functions */
-        ogre_root_ = std::auto_ptr<Ogre::Root>(new Ogre::Root(config_filename_g, plugins_filename_g, log_filename_g));
+        ogre_root_ = std::auto_ptr<Ogre::Root>(new Ogre::Root(config_filename_g, plugins_filename_g, ""));
 		//ogre_root_->showConfigDialog();
 
     }

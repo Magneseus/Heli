@@ -40,6 +40,8 @@ namespace ogre_application {
         void MainLoop(void); 
 
     private:
+		// Create our own logger to remove the console spam
+		Ogre::LogManager* lm;
 		// Create root that allows us to access Ogre commands
         std::auto_ptr<Ogre::Root> ogre_root_;
         // Main Ogre window
