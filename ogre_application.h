@@ -13,6 +13,7 @@
 #include "OIS/OIS.h"
 
 #include "Shapes.h"
+#include "GameEntity.h"
 
 namespace ogre_application {
 	/* A useful type to define */
@@ -58,12 +59,18 @@ namespace ogre_application {
     private:
 		// Create our own logger to remove the console spam
 		Ogre::LogManager* lm;
-
 		// Input managers
 		OIS::InputManager *input_manager_;
+		// Ogre Scene Manager
+		Ogre::SceneManager* ogre_scene_manager_;
 
 		// Camera Scene Node
 		Ogre::SceneNode* cameraSceneNode;
+
+		// Player Entity
+		std::shared_ptr<GameEntity> PlayerEntity;
+		// List of in game entities
+		std::vector<std::shared_ptr<GameEntity>> GameEntityList;
 
 		/* Methods to initialize the application */
 		void InitRootNode(void);
@@ -78,6 +85,9 @@ namespace ogre_application {
 		/* Methods to handle events */
 		bool frameRenderingQueued(const Ogre::FrameEvent& fe);
 		void windowResized(Ogre::RenderWindow* rw);
+
+		// Error handling message
+		void Error(Ogre::String, Ogre::String = Ogre::String(""));
 
 	private:
 		/* Some configuration constants */

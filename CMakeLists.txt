@@ -5,11 +5,11 @@ project(HELI)
 
 # Specify project files: header files and source files
 set(HDRS
-	./ogre_application.h
+	./ogre_application.h ./Shapes.h ./GameEntity.h
 )
  
 set(SRCS
-	./ogre_application.cpp ./main.cpp
+	./ogre_application.cpp ./main.cpp ./Shapes.cpp ./GameEntity.cpp
 )
 
 # The rules here are specific to Windows Systems

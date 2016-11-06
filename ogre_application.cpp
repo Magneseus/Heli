@@ -39,12 +39,17 @@ try {
 	/* Main loop to keep the application going */
 	ogre_root_->clearEventTimes();
 
-	CreateCubeEntity(ogre_root_->getSceneManager("MySceneManager"), "CubeEnt");
 
-	Ogre::SceneNode* tmp = ogre_root_->getSceneManager("MySceneManager")->getRootSceneNode()->createChildSceneNode();
-	Ogre::Entity* tmpEnt = ogre_root_->getSceneManager("MySceneManager")->createEntity("CubeEnt");
+	CreateCubeEntity(ogre_scene_manager_, "CubeEnt");
+
+	Ogre::SceneNode* tmp = ogre_scene_manager_->getRootSceneNode()->createChildSceneNode();
+	Ogre::Entity* tmpEnt = ogre_scene_manager_->createEntity("CubeEnt");
 	tmpEnt->setMaterialName("WhiteSurface");
 	tmp->attachObject(tmpEnt);
+
+	PlayerEntity = std::shared_ptr<GameEntity>(new GameEntity(ogre_scene_manager_, tmp));
+	BindCamera(PlayerEntity->getSceneNode());
+	GameEntityList.push_back(PlayerEntity);
 
 	while (!ogre_window_->isClosed())
 	{
@@ -88,12 +93,22 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 void OgreApplication::BindCamera(Ogre::SceneNode* nodeToBind)
 {
 	// Get the camera, detach it from the scene node
-	Ogre::Camera* camEnt = cameraSceneNode->getAttachedObject("MyCamera");
-	cameraSceneNode->detachObject("MyCamera");
+	Ogre::Camera* camEnt = dynamic_cast<Ogre::Camera*>(cameraSceneNode->getAttachedObject("MyCamera"));
 
-	// Attach the camera to the new scene node and set it as the new camera node
-	nodeToBind->attachObject(camEnt);
-	cameraSceneNode = nodeToBind;
+	if (camEnt != NULL)
+	{
+		cameraSceneNode->detachObject("MyCamera");
+
+		// Attach the camera to the new scene node and set it as the new camera node
+		nodeToBind->attachObject(camEnt);
+		cameraSceneNode = nodeToBind;
+	}
+	else
+	{
+		Ogre::String e("Camera object was unable to be detached from SceneNode : ");
+		e.append(cameraSceneNode->getName());
+		Error(e);
+	}
 }
 
 
@@ -200,11 +215,11 @@ void OgreApplication::InitViewport(void)
     try {
 
         /* Retrieve scene manager and root scene node */
-        Ogre::SceneManager* scene_manager = ogre_root_->createSceneManager(Ogre::ST_GENERIC, "MySceneManager");
-        Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
+        ogre_scene_manager_ = ogre_root_->createSceneManager(Ogre::ST_GENERIC, "MySceneManager");
+        Ogre::SceneNode* root_scene_node = ogre_scene_manager_->getRootSceneNode();
 
         /* Create camera object */
-        Ogre::Camera* camera = scene_manager->createCamera("MyCamera");
+        Ogre::Camera* camera = ogre_scene_manager_->createCamera("MyCamera");
         cameraSceneNode = root_scene_node->createChildSceneNode("MyCameraNode");
 		cameraSceneNode->attachObject(camera);
 
@@ -339,6 +354,12 @@ void OgreApplication::windowResized(Ogre::RenderWindow* rw)
 	ogre_window_->resize(width, height);
 	ogre_window_->windowMovedOrResized();
 	ogre_window_->update();
+}
+
+
+void OgreApplication::Error(Ogre::String errMessage, Ogre::String errPrefix)
+{
+	std::cout << errPrefix << errMessage << std::endl;
 }
 
 
