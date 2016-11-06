@@ -12,6 +12,8 @@
 #include "OGRE/OgreEntity.h"
 #include "OIS/OIS.h"
 
+#include "Shapes.h"
+
 namespace ogre_application {
 	/* A useful type to define */
 	typedef std::vector<Ogre::String> Strings;
@@ -39,18 +41,29 @@ namespace ogre_application {
 		// Keep application active
         void MainLoop(void); 
 
+		// Bind Camera to a given scene node
+		void BindCamera(Ogre::SceneNode* nodeToBind);
+
+		//////////// Public Variables ///////////////
+
+		// Create root that allows us to access Ogre commands
+		std::auto_ptr<Ogre::Root> ogre_root_;
+		// Main Ogre window
+		Ogre::RenderWindow* ogre_window_;
+
+		// Input stuffs
+		OIS::Mouse *mouse_;
+		OIS::Keyboard *keyboard_;
+
     private:
 		// Create our own logger to remove the console spam
 		Ogre::LogManager* lm;
-		// Create root that allows us to access Ogre commands
-        std::auto_ptr<Ogre::Root> ogre_root_;
-        // Main Ogre window
-        Ogre::RenderWindow* ogre_window_;
 
 		// Input managers
 		OIS::InputManager *input_manager_;
-		OIS::Mouse *mouse_;
-		OIS::Keyboard *keyboard_;
+
+		// Camera Scene Node
+		Ogre::SceneNode* cameraSceneNode;
 
 		/* Methods to initialize the application */
 		void InitRootNode(void);
@@ -91,7 +104,7 @@ namespace ogre_application {
 		const Ogre::ColourValue viewport_background_color_g = Ogre::ColourValue(0.0, 0.0, 0.0);
 		float camera_near_clip_distance_g = 0.01f;
 		float camera_far_clip_distance_g = 100.0f;
-		Ogre::Vector3 camera_position_g = Ogre::Vector3(0.5, 0.5, 1.5);
+		Ogre::Vector3 camera_position_g = Ogre::Vector3(0.5, 0.5, 5.5);
 		Ogre::Vector3 camera_look_at_g = Ogre::Vector3(0.0, 0.0, 0.0);
 		Ogre::Vector3 camera_up_g = Ogre::Vector3(0.0, 1.0, 0.0);
 

@@ -9,7 +9,7 @@ set(HDRS
 )
  
 set(SRCS
-	./ogre_application.cpp ./main.cpp ./MaterialVp.glsl ./MaterialFp.glsl MaterialFile.material
+	./ogre_application.cpp ./main.cpp
 )
 
 # The rules here are specific to Windows Systems

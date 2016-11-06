@@ -28,6 +28,9 @@ void OgreApplication::Init(void)
 	InitEvents();
 	InitOIS();
 	LoadMaterials();
+
+	// Run our own initialization steps
+
 }
 
 void OgreApplication::MainLoop(void)
@@ -35,6 +38,13 @@ void OgreApplication::MainLoop(void)
 try {
 	/* Main loop to keep the application going */
 	ogre_root_->clearEventTimes();
+
+	CreateCubeEntity(ogre_root_->getSceneManager("MySceneManager"), "CubeEnt");
+
+	Ogre::SceneNode* tmp = ogre_root_->getSceneManager("MySceneManager")->getRootSceneNode()->createChildSceneNode();
+	Ogre::Entity* tmpEnt = ogre_root_->getSceneManager("MySceneManager")->createEntity("CubeEnt");
+	tmpEnt->setMaterialName("WhiteSurface");
+	tmp->attachObject(tmpEnt);
 
 	while (!ogre_window_->isClosed())
 	{
@@ -75,15 +85,27 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 }
 
 
+void OgreApplication::BindCamera(Ogre::SceneNode* nodeToBind)
+{
+	// Get the camera, detach it from the scene node
+	Ogre::Camera* camEnt = cameraSceneNode->getAttachedObject("MyCamera");
+	cameraSceneNode->detachObject("MyCamera");
+
+	// Attach the camera to the new scene node and set it as the new camera node
+	nodeToBind->attachObject(camEnt);
+	cameraSceneNode = nodeToBind;
+}
+
+
 void OgreApplication::InitRootNode(void)
 {
     try {
 		// Initialize log manager
-		lm = new Ogre::LogManager();
-		lm->createLog(log_filename_g, true, false, false);
+		//lm = new Ogre::LogManager();
+		//lm->createLog(log_filename_g, true, false, false);
 
 		/* We need to have an Ogre root to be able to access all Ogre functions */
-        ogre_root_ = std::auto_ptr<Ogre::Root>(new Ogre::Root(config_filename_g, plugins_filename_g, ""));
+        ogre_root_ = std::auto_ptr<Ogre::Root>(new Ogre::Root(config_filename_g, plugins_filename_g, log_filename_g));
 		//ogre_root_->showConfigDialog();
 
     }
@@ -183,8 +205,8 @@ void OgreApplication::InitViewport(void)
 
         /* Create camera object */
         Ogre::Camera* camera = scene_manager->createCamera("MyCamera");
-        Ogre::SceneNode* camera_scene_node = root_scene_node->createChildSceneNode("MyCameraNode");
-        camera_scene_node->attachObject(camera);
+        cameraSceneNode = root_scene_node->createChildSceneNode("MyCameraNode");
+		cameraSceneNode->attachObject(camera);
 
         camera->setNearClipDistance(camera_near_clip_distance_g);
         camera->setFarClipDistance(camera_far_clip_distance_g); 
