@@ -18,6 +18,12 @@ GameEntity::~GameEntity()
 
 
 
+void GameEntity::update(Ogre::Real& deltaTime)
+{
+
+}
+
+
 ///////////////////// Getters & Setters ////////////////////////////
 
 Ogre::SceneNode* GameEntity::getSceneNode()

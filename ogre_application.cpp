@@ -27,6 +27,10 @@ void OgreApplication::Init(void)
     InitViewport();
 	InitEvents();
 	InitOIS();
+
+	// Re-enable debug window logging
+	lm->getDefaultLog()->setDebugOutputEnabled(true);
+
 	LoadMaterials();
 
 	// Run our own initialization steps
@@ -86,6 +90,43 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 		return false;
 	}
 
+
+	// Helicopter Controls
+	{
+		// Pitch +
+		if (keyboard_->isKeyDown(OIS::KC_W) && !keyboard_->isKeyDown(OIS::KC_S))
+		{
+
+		}
+		// Pitch -
+		if (keyboard_->isKeyDown(OIS::KC_S) && !keyboard_->isKeyDown(OIS::KC_W))
+		{
+
+		}
+
+		// Roll +
+		if (keyboard_->isKeyDown(OIS::KC_A) && !keyboard_->isKeyDown(OIS::KC_D))
+		{
+
+		}
+		// Roll -
+		if (keyboard_->isKeyDown(OIS::KC_D) && !keyboard_->isKeyDown(OIS::KC_A))
+		{
+
+		}
+
+		// Yaw +
+		if (keyboard_->isKeyDown(OIS::KC_Q) && !keyboard_->isKeyDown(OIS::KC_E))
+		{
+
+		}
+		// Yaw -
+		if (keyboard_->isKeyDown(OIS::KC_E) && !keyboard_->isKeyDown(OIS::KC_Q))
+		{
+
+		}
+	}
+
 	return true;
 }
 
@@ -116,13 +157,12 @@ void OgreApplication::InitRootNode(void)
 {
     try {
 		// Initialize log manager
-		//lm = new Ogre::LogManager();
-		//lm->createLog(log_filename_g, true, false, false);
+		lm = new Ogre::LogManager();
+		lm->createLog(log_filename_g, true, false, false);
 
 		/* We need to have an Ogre root to be able to access all Ogre functions */
-        ogre_root_ = std::auto_ptr<Ogre::Root>(new Ogre::Root(config_filename_g, plugins_filename_g, log_filename_g));
+        ogre_root_ = std::auto_ptr<Ogre::Root>(new Ogre::Root(config_filename_g, plugins_filename_g, ""));
 		//ogre_root_->showConfigDialog();
-
     }
     catch (Ogre::Exception &e){
 		throw(OgreAppException(std::string("Ogre::Exception: ") + std::string(e.what())));
