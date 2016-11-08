@@ -9,10 +9,15 @@ public:
 	Helicopter();
 	~Helicopter();
 
-	void Pitch(Ogre::Real);
-	void Roll(Ogre::Real);
-	void Yaw(Ogre::Real);
-	void Lift(Ogre::Real);
+	void PitchUp(Ogre::Real);
+	void PitchDown(Ogre::Real);
+	void RollLeft(Ogre::Real);
+	void RollRight(Ogre::Real);
+	void YawLeft(Ogre::Real);
+	void YawRight(Ogre::Real);
+	
+	void LiftUp(Ogre::Real);
+	void LiftDown(Ogre::Real);
 
 	virtual void update(Ogre::Real deltaTime);
 

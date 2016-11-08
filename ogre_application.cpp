@@ -125,6 +125,17 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 		{
 
 		}
+
+		// Lift +
+		if (keyboard_->isKeyDown(OIS::KC_SPACE) && !keyboard_->isKeyDown(OIS::KC_C))
+		{
+
+		}
+		// Lift -
+		if (keyboard_->isKeyDown(OIS::KC_C) && !keyboard_->isKeyDown(OIS::KC_SPACE))
+		{
+
+		}
 	}
 
 	return true;
@@ -143,6 +154,9 @@ Ogre::Camera* OgreApplication::BindCamera(Ogre::SceneNode* nodeToBind)
 		// Attach the camera to the new scene node and set it as the new camera node
 		nodeToBind->attachObject(camEnt);
 		cameraSceneNode = nodeToBind;
+
+		// Reset the camera's position
+		camEnt->setPosition(0, 0, 0);
 
 		// Return the camera entity
 		return camEnt;
