@@ -131,7 +131,7 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 }
 
 
-void OgreApplication::BindCamera(Ogre::SceneNode* nodeToBind)
+Ogre::Camera* OgreApplication::BindCamera(Ogre::SceneNode* nodeToBind)
 {
 	// Get the camera, detach it from the scene node
 	Ogre::Camera* camEnt = dynamic_cast<Ogre::Camera*>(cameraSceneNode->getAttachedObject("MyCamera"));
@@ -143,6 +143,9 @@ void OgreApplication::BindCamera(Ogre::SceneNode* nodeToBind)
 		// Attach the camera to the new scene node and set it as the new camera node
 		nodeToBind->attachObject(camEnt);
 		cameraSceneNode = nodeToBind;
+
+		// Return the camera entity
+		return camEnt;
 	}
 	else
 	{
@@ -150,6 +153,8 @@ void OgreApplication::BindCamera(Ogre::SceneNode* nodeToBind)
 		e.append(cameraSceneNode->getName());
 		Error(e);
 	}
+
+	return NULL;
 }
 
 

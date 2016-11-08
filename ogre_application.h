@@ -43,7 +43,7 @@ namespace ogre_application {
         void MainLoop(void); 
 
 		// Bind Camera to a given scene node
-		void BindCamera(Ogre::SceneNode* nodeToBind);
+		Ogre::Camera* BindCamera(Ogre::SceneNode* nodeToBind);
 
 		//////////// Public Variables ///////////////
 

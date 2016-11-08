@@ -16,9 +16,8 @@ public:
 	bool doesTick;
 
 protected:
+	Ogre::SceneNode* model;
 
 private:
 	Ogre::SceneManager* scnMan;
-	Ogre::SceneNode* model;
-
 };
