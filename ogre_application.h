@@ -45,6 +45,9 @@ namespace ogre_application {
 		// Bind Camera to a given scene node
 		Ogre::Camera* BindCamera(Ogre::SceneNode* nodeToBind);
 
+		// Sun light
+		Ogre::Light* SunLight;
+
 		//////////// Public Variables ///////////////
 
 		// Create root that allows us to access Ogre commands
@@ -63,6 +66,8 @@ namespace ogre_application {
 		OIS::InputManager *input_manager_;
 		// Ogre Scene Manager
 		Ogre::SceneManager* ogre_scene_manager_;
+		// bool to toggle exiting the game
+		bool wantToExit = false;
 
 		// Camera Scene Node
 		Ogre::SceneNode* cameraSceneNode;
@@ -101,8 +106,8 @@ namespace ogre_application {
 		/* Main window settings */
 		const Ogre::String window_title_g = "Demo";
 		const Ogre::String custom_window_capacities_g = "";
-		const unsigned int window_width_g = 800;
-		const unsigned int window_height_g = 600;
+		const unsigned int window_width_g = 1600;
+		const unsigned int window_height_g = 900;
 		const bool window_full_screen_g = false;
 
 		/* Viewport and camera settings */
@@ -113,7 +118,7 @@ namespace ogre_application {
 		unsigned short viewport_z_order_g = 100;
 		const Ogre::ColourValue viewport_background_color_g = Ogre::ColourValue(0.0, 0.0, 0.0);
 		float camera_near_clip_distance_g = 0.01f;
-		float camera_far_clip_distance_g = 100.0f;
+		float camera_far_clip_distance_g = 10000.0f;
 		Ogre::Vector3 camera_position_g = Ogre::Vector3(0.5, 0.5, 5.5);
 		Ogre::Vector3 camera_look_at_g = Ogre::Vector3(0.0, 0.0, 0.0);
 		Ogre::Vector3 camera_up_g = Ogre::Vector3(0.0, 1.0, 0.0);

@@ -35,6 +35,23 @@ void OgreApplication::Init(void)
 
 	// Run our own initialization steps
 
+	// Set up the Sun light
+	SunLight = ogre_scene_manager_->createLight("Sun");
+	SunLight->setType(Ogre::Light::LT_DIRECTIONAL);
+	SunLight->setDiffuseColour(.88, .73, .05);
+	SunLight->setSpecularColour(.88, .73, .05);
+	SunLight->setDirection(0, -1, 1);
+
+	// Set up the sky box
+	ogre_scene_manager_->setSkyBox(true, "MySky", 500);
+
+	// Spawn the terrain
+	Ogre::SceneNode* tmpGround = ogre_scene_manager_->getRootSceneNode()->createChildSceneNode();
+	Ogre::Entity* tmpEnt = ogre_scene_manager_->createEntity("Desert_Ground.mesh");
+	tmpEnt->setMaterialName("Material.001");
+	tmpGround->attachObject(tmpEnt);
+	tmpGround->setScale(20, 20, 20);
+	tmpGround->setPosition(0, -5, 0);
 }
 
 void OgreApplication::MainLoop(void)
@@ -43,13 +60,10 @@ try {
 	/* Main loop to keep the application going */
 	ogre_root_->clearEventTimes();
 
-
 	CreateCubeEntity(ogre_scene_manager_, "CubeEnt");
 
 	Ogre::SceneNode* tmp = ogre_scene_manager_->getRootSceneNode()->createChildSceneNode();
-	Ogre::Entity* tmpEnt = ogre_scene_manager_->createEntity("CubeEnt");
-	tmpEnt->setMaterialName("WhiteSurface");
-	tmp->attachObject(tmpEnt);
+	tmp->setPosition(0, 0, 0);
 
 	PlayerEntity = std::shared_ptr<GameEntity>(new GameEntity(ogre_scene_manager_, tmp));
 	BindCamera(PlayerEntity->getSceneNode());
@@ -62,6 +76,12 @@ try {
 		ogre_root_->renderOneFrame();
 
 		Ogre::WindowEventUtilities::messagePump();
+
+		// If we want to exit, destroy the window
+		if (wantToExit)
+		{
+			ogre_window_->destroy();
+		}
 	}
 }
 catch (Ogre::Exception &e) {
@@ -85,8 +105,7 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 	/* Handle specific key events */
 	if (keyboard_->isKeyDown(OIS::KC_ESCAPE))
 	{
-		ogre_root_->shutdown();
-		ogre_window_->destroy();
+		wantToExit = true;
 		return false;
 	}
 
@@ -136,6 +155,25 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 		{
 
 		}
+	}
+
+	// Mouse (Camera) Controls
+	{
+		// Camera mouse movement
+		int mdeltaX = mouse_->getMouseState().X.rel;
+		int mdeltaY = mouse_->getMouseState().Y.rel;
+
+		float divi = 500.f;
+
+		float xAng = -mdeltaX / divi;
+		float yAng = -mdeltaY / divi;
+
+		Ogre::Real curPitch = cameraSceneNode->getOrientation().getPitch().valueAngleUnits();
+		if (curPitch > Ogre::Real(-90.0) && yAng < 0.0f)
+			cameraSceneNode->pitch(Ogre::Radian(yAng));
+		else if (curPitch < Ogre::Real(90.0) && yAng > 0.0f)
+			cameraSceneNode->pitch(Ogre::Radian(yAng));
+		cameraSceneNode->yaw(Ogre::Radian(xAng), Ogre::Node::TS_WORLD);
 	}
 
 	return true;
