@@ -38,8 +38,9 @@ void OgreApplication::Init(void)
 	// Set up the Sun light
 	SunLight = ogre_scene_manager_->createLight("Sun");
 	SunLight->setType(Ogre::Light::LT_DIRECTIONAL);
-	SunLight->setDiffuseColour(.88, .73, .05);
-	SunLight->setSpecularColour(.88, .73, .05);
+	SunLight->setDiffuseColour(Ogre::Real(0.985), Ogre::Real(1.0), Ogre::Real(0.75));
+	SunLight->setSpecularColour(Ogre::Real(0.985), Ogre::Real(1.0), Ogre::Real(0.75));
+	SunLight->setPowerScale(Ogre::Real(0.33));
 	SunLight->setDirection(0, -1, 1);
 
 	// Set up the sky box
@@ -63,10 +64,9 @@ try {
 	CreateCubeEntity(ogre_scene_manager_, "CubeEnt");
 
 	Ogre::SceneNode* tmp = ogre_scene_manager_->getRootSceneNode()->createChildSceneNode();
-	tmp->setPosition(0, 0, 0);
 
-	PlayerEntity = std::shared_ptr<GameEntity>(new GameEntity(ogre_scene_manager_, tmp));
-	BindCamera(PlayerEntity->getSceneNode());
+	PlayerEntity = std::shared_ptr<GameEntity>(new Player(ogre_scene_manager_, tmp));
+	//BindCamera(PlayerEntity->getSceneNode());
 	GameEntityList.push_back(PlayerEntity);
 
 	while (!ogre_window_->isClosed())
@@ -101,6 +101,14 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 	/* Capture input */
 	keyboard_->capture();
 	mouse_->capture();
+
+	Ogre::Real deltaTime = fe.timeSinceLastFrame;
+
+	// Update all game entities
+	for (auto it = GameEntityList.begin(); it != GameEntityList.end(); ++it)
+	{
+		(*it)->update(deltaTime);
+	}
 
 	/* Handle specific key events */
 	if (keyboard_->isKeyDown(OIS::KC_ESCAPE))

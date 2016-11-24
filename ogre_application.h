@@ -14,6 +14,7 @@
 
 #include "Shapes.h"
 #include "GameEntity.h"
+#include "Player.h"
 
 namespace ogre_application {
 	/* A useful type to define */

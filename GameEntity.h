@@ -17,7 +17,7 @@ public:
 
 protected:
 	Ogre::SceneNode* model;
+	Ogre::SceneManager* scnMan;
 
 private:
-	Ogre::SceneManager* scnMan;
 };
