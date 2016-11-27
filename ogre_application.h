@@ -70,6 +70,9 @@ namespace ogre_application {
 		// bool to toggle exiting the game
 		bool wantToExit = false;
 
+		// Time
+		Ogre::Real timeMod;
+
 		// Camera Scene Node
 		Ogre::SceneNode* cameraSceneNode;
 		// Camera object

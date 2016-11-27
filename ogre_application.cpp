@@ -34,6 +34,7 @@ void OgreApplication::Init(void)
 	LoadMaterials();
 
 	// Run our own initialization steps
+	timeMod = Ogre::Real(1.0);
 
 	// Set up the Sun light
 	SunLight = ogre_scene_manager_->createLight("Sun");
@@ -113,16 +114,13 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 
 	// Get the delta time
 	Ogre::Real deltaTime = fe.timeSinceLastFrame;
+	Ogre::Real deltaTimeAltered = deltaTime * timeMod;
 
 	// Update all game entities
 	for (auto it = GameEntityList.begin(); it != GameEntityList.end(); ++it)
 	{
-		(*it)->update(deltaTime);
+		(*it)->update(deltaTimeAltered);
 	}
-
-
-	PlayerEntity->getSceneNode()->translate(
-		Ogre::Real(0.0), Ogre::Real(0.0), Ogre::Real(10.f * deltaTime));
 
 
 	/*   INPUT SECTION BELOW  */
@@ -139,52 +137,59 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 		return false;
 	}
 
+	// Time dilation settings
+	if (keyboard_->isKeyDown(OIS::KC_LSHIFT))
+	{
+		int scrollAmnt = mouse_->getMouseState().Z.rel / 120;
+
+		if (timeMod > Ogre::Real(2.0))
+		{
+			timeMod += scrollAmnt * Ogre::Real(0.5);
+		}
+		else
+		{
+			timeMod += scrollAmnt * Ogre::Real(0.1);
+		}
+	}
+
 
 	// Helicopter Controls
 	{
 		// Pitch +
 		if (keyboard_->isKeyDown(OIS::KC_W) && !keyboard_->isKeyDown(OIS::KC_S))
-		{
-
-		}
+			PlayerEntity->PitchDir = -1;
 		// Pitch -
-		if (keyboard_->isKeyDown(OIS::KC_S) && !keyboard_->isKeyDown(OIS::KC_W))
-		{
-
-		}
+		else if (keyboard_->isKeyDown(OIS::KC_S) && !keyboard_->isKeyDown(OIS::KC_W))
+			PlayerEntity->PitchDir = 1;
+		else
+			PlayerEntity->PitchDir = 0;
 
 		// Roll +
 		if (keyboard_->isKeyDown(OIS::KC_A) && !keyboard_->isKeyDown(OIS::KC_D))
-		{
-
-		}
+			PlayerEntity->RollDir = 1;
 		// Roll -
-		if (keyboard_->isKeyDown(OIS::KC_D) && !keyboard_->isKeyDown(OIS::KC_A))
-		{
-
-		}
+		else if (keyboard_->isKeyDown(OIS::KC_D) && !keyboard_->isKeyDown(OIS::KC_A))
+			PlayerEntity->RollDir = -1;
+		else
+			PlayerEntity->RollDir = 0;
 
 		// Yaw +
 		if (keyboard_->isKeyDown(OIS::KC_Q) && !keyboard_->isKeyDown(OIS::KC_E))
-		{
-
-		}
+			PlayerEntity->YawDir = 1;
 		// Yaw -
-		if (keyboard_->isKeyDown(OIS::KC_E) && !keyboard_->isKeyDown(OIS::KC_Q))
-		{
-
-		}
+		else if (keyboard_->isKeyDown(OIS::KC_E) && !keyboard_->isKeyDown(OIS::KC_Q))
+			PlayerEntity->YawDir = -1;
+		else
+			PlayerEntity->YawDir = 0;
 
 		// Lift +
 		if (keyboard_->isKeyDown(OIS::KC_SPACE) && !keyboard_->isKeyDown(OIS::KC_C))
-		{
-
-		}
+			PlayerEntity->LiftDir = 1;
 		// Lift -
-		if (keyboard_->isKeyDown(OIS::KC_C) && !keyboard_->isKeyDown(OIS::KC_SPACE))
-		{
-
-		}
+		else if (keyboard_->isKeyDown(OIS::KC_C) && !keyboard_->isKeyDown(OIS::KC_SPACE))
+			PlayerEntity->LiftDir = -1;
+		else
+			PlayerEntity->LiftDir = 0;
 	}
 
 	// Mouse (Camera) Controls
@@ -256,14 +261,15 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 				cameraSceneNode->pitch(Ogre::Radian(yAng));// , Ogre::Node::TS_WORLD);
 			}
 
-			cameraSceneNode->translate(camYaw * camPitch * transAmount);
+			cameraSceneNode->translate(camYaw * camPitch * transAmount, Ogre::Node::TS_WORLD);
 		}
 
 		// Camera zooming (only in third person
 		if (curCameraMode == CameraMode::ThirdPerson &&
-			camZoomAmount >= 10 && camZoomAmount <= 200)
+			camZoomAmount >= 10 && camZoomAmount <= 200 &&
+			!keyboard_->isKeyDown(OIS::KC_LSHIFT))
 		{
-			camZoomAmount += Ogre::Real(mouse_->getMouseState().Z.rel / 60);
+			camZoomAmount -= Ogre::Real(mouse_->getMouseState().Z.rel / 60);
 			camZoomAmount = Ogre::Math::Clamp(
 				camZoomAmount, 
 				Ogre::Real(10), 
