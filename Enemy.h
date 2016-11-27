@@ -6,11 +6,15 @@
 class Enemy : public GameEntity
 {
 public:
-	Enemy(Ogre::SceneManager*, Ogre::SceneNode*);
-	~Enemy();
+	Enemy(Ogre::SceneManager*, Ogre::SceneNode*, GameEntity*);
+	virtual ~Enemy();
 
-	void update(Ogre::Real& deltaTime);
+	virtual void update(Ogre::Real& deltaTime);
+
+protected:
+	GameEntity* PlayerEnt;
+	Ogre::SceneNode* turretNode;
 
 private:
-	Ogre::SceneNode* turretNode;
+	
 };

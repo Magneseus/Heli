@@ -79,10 +79,14 @@ void OgreApplication::Init(void)
 
 	// TMP Spawn enemy
 	tmp = ogre_scene_manager_->getRootSceneNode()->createChildSceneNode();
-	Enemy* tmpEnemy = new Enemy(ogre_scene_manager_, tmp);
+	Tank* tmpEnemy = new Tank(ogre_scene_manager_, tmp, PlayerEntity);
 	GameEntityList.push_back(tmpEnemy);
+	tmp->setPosition(-10, -5, 0);
 
-	tmp->setPosition(0, -5, 0);
+	tmp = ogre_scene_manager_->getRootSceneNode()->createChildSceneNode();
+	Jeep* tmpEnemy2 = new Jeep(ogre_scene_manager_, tmp, PlayerEntity);
+	GameEntityList.push_back(tmpEnemy2);
+	tmp->setPosition(10, -5, 0);
 }
 
 void OgreApplication::MainLoop(void)
