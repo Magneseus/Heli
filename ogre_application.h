@@ -18,6 +18,7 @@
 #include "Enemy.h"
 #include "Tank.h"
 #include "Jeep.h"
+#include "AATower.h"
 
 namespace ogre_application {
 	/* A useful type to define */

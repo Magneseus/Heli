@@ -87,6 +87,11 @@ void OgreApplication::Init(void)
 	Jeep* tmpEnemy2 = new Jeep(ogre_scene_manager_, tmp, PlayerEntity);
 	GameEntityList.push_back(tmpEnemy2);
 	tmp->setPosition(10, -5, 0);
+
+	tmp = ogre_scene_manager_->getRootSceneNode()->createChildSceneNode();
+	AATower* tmpEnemy3 = new AATower(ogre_scene_manager_, tmp, PlayerEntity);
+	GameEntityList.push_back(tmpEnemy3);
+	tmp->setPosition(0, -5, 10);
 }
 
 void OgreApplication::MainLoop(void)
