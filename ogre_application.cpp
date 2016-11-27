@@ -53,6 +53,16 @@ void OgreApplication::Init(void)
 	tmpGround->attachObject(tmpEnt);
 	tmpGround->setScale(20, 20, 20);
 	tmpGround->setPosition(0, -5, 0);
+
+
+	// Camera settings
+	curCameraMode = CameraMode::FirstPerson;
+	camZoomAmount = Ogre::Real(30.0);
+	cameraModeSwitched = false;
+	tabIsDown = false;
+
+	camYaw = Ogre::Quaternion::IDENTITY;
+	camPitch = Ogre::Quaternion::IDENTITY;
 }
 
 void OgreApplication::MainLoop(void)
@@ -61,13 +71,14 @@ try {
 	/* Main loop to keep the application going */
 	ogre_root_->clearEventTimes();
 
-	CreateCubeEntity(ogre_scene_manager_, "CubeEnt");
-
 	Ogre::SceneNode* tmp = ogre_scene_manager_->getRootSceneNode()->createChildSceneNode();
-
-	PlayerEntity = std::shared_ptr<GameEntity>(new Player(ogre_scene_manager_, tmp));
-	//BindCamera(PlayerEntity->getSceneNode());
+	PlayerEntity = new Player(ogre_scene_manager_, tmp);
 	GameEntityList.push_back(PlayerEntity);
+
+	if (curCameraMode == CameraMode::FirstPerson)
+		BindCamera(PlayerEntity->getFPCameraNode());
+	else
+		BindCamera(PlayerEntity->getTPCameraNode());
 
 	while (!ogre_window_->isClosed())
 	{
@@ -98,10 +109,9 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 	/* This event is called after a frame is queued for rendering */
 	/* Do stuff in this event since the GPU is rendering and the CPU is idle */
 
-	/* Capture input */
-	keyboard_->capture();
-	mouse_->capture();
+	/*  GAME UPDATE SECTION BELOW  */
 
+	// Get the delta time
 	Ogre::Real deltaTime = fe.timeSinceLastFrame;
 
 	// Update all game entities
@@ -109,6 +119,18 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 	{
 		(*it)->update(deltaTime);
 	}
+
+
+	PlayerEntity->getSceneNode()->translate(
+		Ogre::Real(0.0), Ogre::Real(0.0), Ogre::Real(10.f * deltaTime));
+
+
+	/*   INPUT SECTION BELOW  */
+
+	/* Capture input */
+	keyboard_->capture();
+	mouse_->capture();
+
 
 	/* Handle specific key events */
 	if (keyboard_->isKeyDown(OIS::KC_ESCAPE))
@@ -167,6 +189,26 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 
 	// Mouse (Camera) Controls
 	{
+		// Camera switching (between first and third person)
+		if (!tabIsDown && keyboard_->isKeyDown(OIS::KC_TAB))
+		{
+			tabIsDown = true;
+			if (curCameraMode == CameraMode::FirstPerson)
+			{
+				curCameraMode = CameraMode::ThirdPerson;
+				BindCamera(PlayerEntity->getTPCameraNode());
+			}
+			else
+			{
+				curCameraMode = CameraMode::FirstPerson;
+				BindCamera(PlayerEntity->getFPCameraNode());
+			}
+		}
+		else if (tabIsDown && !keyboard_->isKeyDown(OIS::KC_TAB))
+		{
+			tabIsDown = false;
+		}
+
 		// Camera mouse movement
 		int mdeltaX = mouse_->getMouseState().X.rel;
 		int mdeltaY = mouse_->getMouseState().Y.rel;
@@ -177,11 +219,56 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 		float yAng = -mdeltaY / divi;
 
 		Ogre::Real curPitch = cameraSceneNode->getOrientation().getPitch().valueAngleUnits();
-		if (curPitch > Ogre::Real(-90.0) && yAng < 0.0f)
-			cameraSceneNode->pitch(Ogre::Radian(yAng));
-		else if (curPitch < Ogre::Real(90.0) && yAng > 0.0f)
-			cameraSceneNode->pitch(Ogre::Radian(yAng));
-		cameraSceneNode->yaw(Ogre::Radian(xAng), Ogre::Node::TS_WORLD);
+		bool shouldPitch = ((curPitch > Ogre::Real(-90.0) && yAng < 0.0f) ||
+							(curPitch < Ogre::Real(90.0) && yAng > 0.0f));
+		
+		// First person, we can just pitch & yaw the camera node around
+		if (curCameraMode == CameraMode::FirstPerson)
+		{
+			cameraSceneNode->yaw(Ogre::Radian(xAng), Ogre::Node::TS_PARENT);
+			
+			if (shouldPitch)
+				cameraSceneNode->pitch(Ogre::Radian(yAng), Ogre::Node::TS_LOCAL);
+		}
+		// Third person we manually create and apply the quaternions for orbiting
+		else if (curCameraMode == CameraMode::ThirdPerson)
+		{
+			Ogre::Vector3 transAmount = Ogre::Vector3(0.0, 0.0, camZoomAmount);
+
+			// Get the quaternions
+			Ogre::Quaternion extraYaw;
+			extraYaw.FromAngleAxis(Ogre::Radian(xAng), Ogre::Vector3::UNIT_Y);
+			camYaw = camYaw * extraYaw;
+
+			// reset the position
+			cameraSceneNode->setPosition(Ogre::Vector3(0.0, 0.0, 0.0));
+			
+			// Yaw
+			cameraSceneNode->yaw(Ogre::Radian(xAng), Ogre::Node::TS_WORLD);
+
+			// If we can still pitch, pitch
+			if (shouldPitch)
+			{
+				Ogre::Quaternion extraPitch;
+				extraPitch.FromAngleAxis(Ogre::Radian(yAng), Ogre::Vector3::UNIT_X);
+				camPitch = camPitch * extraPitch;
+
+				cameraSceneNode->pitch(Ogre::Radian(yAng));// , Ogre::Node::TS_WORLD);
+			}
+
+			cameraSceneNode->translate(camYaw * camPitch * transAmount);
+		}
+
+		// Camera zooming (only in third person
+		if (curCameraMode == CameraMode::ThirdPerson &&
+			camZoomAmount >= 10 && camZoomAmount <= 200)
+		{
+			camZoomAmount += Ogre::Real(mouse_->getMouseState().Z.rel / 60);
+			camZoomAmount = Ogre::Math::Clamp(
+				camZoomAmount, 
+				Ogre::Real(10), 
+				Ogre::Real(200));
+		}
 	}
 
 	return true;
@@ -324,7 +411,7 @@ void OgreApplication::InitViewport(void)
         Ogre::SceneNode* root_scene_node = ogre_scene_manager_->getRootSceneNode();
 
         /* Create camera object */
-        Ogre::Camera* camera = ogre_scene_manager_->createCamera("MyCamera");
+        camera = ogre_scene_manager_->createCamera("MyCamera");
         cameraSceneNode = root_scene_node->createChildSceneNode("MyCameraNode");
 		cameraSceneNode->attachObject(camera);
 

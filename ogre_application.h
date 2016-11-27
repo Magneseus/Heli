@@ -72,11 +72,24 @@ namespace ogre_application {
 
 		// Camera Scene Node
 		Ogre::SceneNode* cameraSceneNode;
+		// Camera object
+		Ogre::Camera* camera;
+		// FP / TP camera mode
+		enum CameraMode {FirstPerson, ThirdPerson, COUNT};
+		CameraMode curCameraMode;
+		// Third person zoom amount
+		Ogre::Real camZoomAmount;
+		Ogre::Quaternion camYaw;
+		Ogre::Quaternion camPitch;
+
+		// Input controls for camera mode switching
+		bool tabIsDown;
+		bool cameraModeSwitched;
 
 		// Player Entity
-		std::shared_ptr<GameEntity> PlayerEntity;
+		Player* PlayerEntity;
 		// List of in game entities
-		std::vector<std::shared_ptr<GameEntity>> GameEntityList;
+		std::vector<GameEntity*> GameEntityList;
 
 		/* Methods to initialize the application */
 		void InitRootNode(void);
