@@ -52,7 +52,7 @@ void OgreApplication::Init(void)
 	Ogre::Entity* tmpEnt = ogre_scene_manager_->createEntity("Desert_Ground.mesh");
 	tmpEnt->setMaterialName("Material.001");
 	tmpGround->attachObject(tmpEnt);
-	tmpGround->setScale(20, 20, 20);
+	tmpGround->setScale(200, 25, 200);
 	tmpGround->setPosition(0, -5, 0);
 
 
@@ -64,14 +64,9 @@ void OgreApplication::Init(void)
 
 	camYaw = Ogre::Quaternion::IDENTITY;
 	camPitch = Ogre::Quaternion::IDENTITY;
-}
 
-void OgreApplication::MainLoop(void)
-{
-try {
-	/* Main loop to keep the application going */
-	ogre_root_->clearEventTimes();
 
+	// Spawn the player
 	Ogre::SceneNode* tmp = ogre_scene_manager_->getRootSceneNode()->createChildSceneNode();
 	PlayerEntity = new Player(ogre_scene_manager_, tmp);
 	GameEntityList.push_back(PlayerEntity);
@@ -80,6 +75,23 @@ try {
 		BindCamera(PlayerEntity->getFPCameraNode());
 	else
 		BindCamera(PlayerEntity->getTPCameraNode());
+
+
+	// TMP Spawn enemy
+	tmp = ogre_scene_manager_->getRootSceneNode()->createChildSceneNode();
+	Enemy* tmpEnemy = new Enemy(ogre_scene_manager_, tmp);
+	GameEntityList.push_back(tmpEnemy);
+
+	tmp->setPosition(0, -5, 0);
+}
+
+void OgreApplication::MainLoop(void)
+{
+try {
+	/* Main loop to keep the application going */
+	ogre_root_->clearEventTimes();
+
+	
 
 	while (!ogre_window_->isClosed())
 	{
