@@ -12,6 +12,7 @@
 #include "OGRE/OgreEntity.h"
 #include "OIS/OIS.h"
 
+#include "DebugDrawer.h"
 #include "Shapes.h"
 #include "GameEntity.h"
 #include "Player.h"

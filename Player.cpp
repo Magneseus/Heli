@@ -36,7 +36,7 @@ Player::Player(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode)
 	LiftDir = 0;
 
 	velocity = Ogre::Vector3(0.0, 0.0, 0.0);
-	acceleration = Ogre::Real(5.0);
+	acceleration = Ogre::Real(800.0);
 	rotAcceleration = Ogre::Real(1.0);
 }
 
@@ -68,7 +68,7 @@ void Player::update(Ogre::Real& deltaTime)
 	{
 		// Set the momentum
 		Ogre::Vector3 accel = Ogre::Vector3(0.0, 0.0, 0.0);
-		accel.y += acceleration * deltaTime * LiftDir;
+		accel.y += acceleration * deltaTime;
 		accel.y = Ogre::Math::Clamp(accel.y, minLift, maxLift);
 
 		// Generate the rotation quaternions
@@ -92,10 +92,11 @@ void Player::update(Ogre::Real& deltaTime)
 		Ogre::Quaternion levelQ;
 		levelQ.FromAngleAxis(orientationQ.getYaw(), Ogre::Vector3::UNIT_Y);
 
-		orientationQ = Ogre::Quaternion::Slerp(0.002f, orientationQ, levelQ, true);
+		orientationQ = Ogre::Quaternion::Slerp(0.5f * deltaTime, orientationQ, levelQ, true);
 
 		// Calculate the new acceleration
 		accel = orientationQ * accel;
+		accel.y *= LiftDir;
 
 		// Apply gravity
 		//accel += Ogre::Vector3(0.0, -0.1, 0.0) * deltaTime;
@@ -109,7 +110,7 @@ void Player::update(Ogre::Real& deltaTime)
 			velocity = Ogre::Math::lerp(
 				velocity, 
 				Ogre::Vector3(velocity.x, 0.0, velocity.z), 
-				Ogre::Real(0.005));
+				Ogre::Real(0.005) * deltaTime);
 		}
 
 		// Generate the proper quaternions
@@ -153,7 +154,7 @@ void Player::update(Ogre::Real& deltaTime)
 
 		// Apply the orientation and translation
 		model->setOrientation(orientationQ);
-		model->translate(velocity);
+		model->translate(velocity * deltaTime);
 	}
 }
 

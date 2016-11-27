@@ -13,7 +13,8 @@ AATower::AATower(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode, GameEnt
 	turretNode->attachObject(tmpEnt);
 	turretNode->setPosition(Ogre::Vector3(0.0, 0.85261, 0.0));
 
-
+	prefDistance = Ogre::Real(-1.0);
+	turretTurningSpeed = Ogre::Real(0.5);
 }
 
 AATower::~AATower()
@@ -23,5 +24,36 @@ AATower::~AATower()
 
 void AATower::update(Ogre::Real& deltaTime)
 {
+	//Enemy::update(deltaTime);
 
+	// Track the player and head towards them
+	Ogre::Vector3 distToPlayer = PlayerEnt->getSceneNode()->_getDerivedPosition() - model->_getDerivedPosition();
+	Ogre::Vector3 planarDistToPlayer = distToPlayer;
+	planarDistToPlayer.y = Ogre::Real(0.0);
+
+	Ogre::Quaternion orient = turretNode->getOrientation();
+	Ogre::Vector3 fwdVec = -orient.zAxis();
+	fwdVec.y = Ogre::Real(0.0);
+	fwdVec.normalise();
+
+	// If so, we need to rotate and move the enemy
+	Ogre::Vector2 a(fwdVec.x, fwdVec.z);
+	Ogre::Vector2 b(planarDistToPlayer.x, planarDistToPlayer.z);
+	Ogre::Real angDir = a.x * b.y - a.y * b.x; angDir /= abs(angDir);
+	Ogre::Radian angBet = a.angleTo(b);
+
+	// If we still need to rotate
+	if (angBet > Ogre::Radian(0.1))
+	{
+		// Generate the orientation we want to reach
+		Ogre::Quaternion endOrient;
+		endOrient.FromAngleAxis(
+			Ogre::Radian(-angDir * turretTurningSpeed * deltaTime),
+			Ogre::Vector3::UNIT_Y);
+
+		// Rotate in that direction
+		orient = orient * endOrient;
+
+		turretNode->setOrientation(orient);
+	}
 }

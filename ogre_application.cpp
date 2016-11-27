@@ -92,6 +92,10 @@ void OgreApplication::Init(void)
 	AATower* tmpEnemy3 = new AATower(ogre_scene_manager_, tmp, PlayerEntity);
 	GameEntityList.push_back(tmpEnemy3);
 	tmp->setPosition(0, -5, 10);
+
+
+	// Initialize the Debug Drawing Lib
+	new DebugDrawer(ogre_scene_manager_, 0.5f);
 }
 
 void OgreApplication::MainLoop(void)
@@ -106,6 +110,8 @@ try {
 	{
 		ogre_window_->update(false);
 		ogre_window_->swapBuffers();
+		// Build the debug frame
+		DebugDrawer::getSingleton().build();
 		ogre_root_->renderOneFrame();
 
 		Ogre::WindowEventUtilities::messagePump();
@@ -130,6 +136,9 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 {
 	/* This event is called after a frame is queued for rendering */
 	/* Do stuff in this event since the GPU is rendering and the CPU is idle */
+
+	// Clear the debug drawer
+	DebugDrawer::getSingleton().clear();
 
 	/*  GAME UPDATE SECTION BELOW  */
 
