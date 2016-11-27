@@ -24,7 +24,7 @@ Player::Player(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode)
 	// Create the camera nodes
 	FPcameraNode = model->createChildSceneNode();
 	FPcameraNode->setInheritOrientation(true);
-	FPcameraNode->translate(Ogre::Vector3(0.0, 1.0, -10.0));
+	FPcameraNode->translate(Ogre::Vector3(-0.7, 0.7, -3.0));
 
 	TPcameraNode = model->createChildSceneNode();
 	TPcameraNode->setInheritOrientation(false);
@@ -38,14 +38,6 @@ Player::Player(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode)
 	velocity = Ogre::Vector3(0.0, 0.0, 0.0);
 	acceleration = Ogre::Real(5.0);
 	rotAcceleration = Ogre::Real(1.0);
-
-	//pitchAxis = Ogre::Vector3::UNIT_X;
-	//rollAxis = Ogre::Vector3::UNIT_Z;
-	//yawAxis = Ogre::Vector3::UNIT_Y;
-	
-	//curPitch = Ogre::Radian(Ogre::Real(0.0));
-	//curRoll = Ogre::Radian(Ogre::Real(0.0));
-	//curYaw = Ogre::Radian(Ogre::Real(0.0));
 }
 
 
@@ -100,7 +92,7 @@ void Player::update(Ogre::Real& deltaTime)
 		Ogre::Quaternion levelQ;
 		levelQ.FromAngleAxis(orientationQ.getYaw(), Ogre::Vector3::UNIT_Y);
 
-		orientationQ = Ogre::Quaternion::Slerp(0.002f, orientationQ, levelQ);
+		orientationQ = Ogre::Quaternion::Slerp(0.002f, orientationQ, levelQ, true);
 
 		// Calculate the new acceleration
 		accel = orientationQ * accel;
