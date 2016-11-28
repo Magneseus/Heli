@@ -29,6 +29,11 @@ Jeep::~Jeep()
 
 }
 
+void Jeep::fire()
+{
+
+}
+
 void Jeep::update(Ogre::Real& deltaTime)
 {
 	Enemy::update(deltaTime);

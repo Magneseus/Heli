@@ -26,6 +26,11 @@ Tank::~Tank()
 
 }
 
+void Tank::fire()
+{
+
+}
+
 void Tank::update(Ogre::Real& deltaTime)
 {
 	Enemy::update(deltaTime);

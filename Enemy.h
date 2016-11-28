@@ -12,6 +12,9 @@ public:
 	virtual void update(Ogre::Real& deltaTime);
 
 protected:
+	// Firing function
+	virtual void fire();
+
 	GameEntity* PlayerEnt;
 	Ogre::SceneNode* turretNode;
 

@@ -10,6 +10,9 @@ public:
 
 	void update(Ogre::Real& deltaTime);
 
+protected:
+	virtual void fire();
+
 private:
 
 };

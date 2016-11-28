@@ -22,6 +22,11 @@ AATower::~AATower()
 
 }
 
+void AATower::fire()
+{
+
+}
+
 void AATower::update(Ogre::Real& deltaTime)
 {
 	//Enemy::update(deltaTime);
