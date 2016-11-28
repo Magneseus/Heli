@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameEntity.h"
+#include "Weapon.h"
 #include "OGRE/OgreMath.h"
 
 class Enemy : public GameEntity
@@ -12,8 +13,8 @@ public:
 	virtual void update(Ogre::Real& deltaTime);
 
 protected:
-	// Firing function
-	virtual void fire() = 0;
+	// Weapon & firing
+	Weapon* weapon;
 
 	GameEntity* PlayerEnt;
 	Ogre::SceneNode* turretNode;

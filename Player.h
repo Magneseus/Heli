@@ -3,6 +3,7 @@
 #define _PI 3.14159
 
 #include "GameEntity.h"
+#include "Weapon.h"
 #include "OGRE/OgreMath.h"
 
 class Player : public GameEntity

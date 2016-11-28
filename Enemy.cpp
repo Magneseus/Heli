@@ -12,13 +12,15 @@ Enemy::Enemy(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode, GameEntity*
 	prefDistance(1.0),
 	timeOutWhenCaughtUp(0.0),
 	timerC(0.0),
-	timeOutC(false)
+	timeOutC(false),
+	weapon(NULL)
 {
 }
 
 Enemy::~Enemy()
 {
-
+	if (weapon)
+		delete weapon;
 }
 
 void Enemy::update(Ogre::Real& deltaTime)
@@ -112,4 +114,11 @@ void Enemy::update(Ogre::Real& deltaTime)
 		true);
 
 	turretNode->_setDerivedOrientation(turOrient);
+
+
+	// Check if we want to fire
+	if (turOrient.zAxis().angleBetween(dirLook) < Ogre::Real(0.1))
+	{
+		weapon->fire(deltaTime);
+	}
 }
