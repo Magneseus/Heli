@@ -19,7 +19,15 @@ Player::Player(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode)
 	rearRotor->attachObject(tmpEnt);
 	rearRotor->setPosition(Ogre::Real(0.100), Ogre::Real(2.290), Ogre::Real(10.420));
 
+	// Attach the minigun node
+	minigunNode = model->createChildSceneNode();
+	tmpEnt = scnMan->createEntity("Minigun.mesh");
+	minigunNode->attachObject(tmpEnt);
+	minigunNode->translate(Ogre::Vector3(0.0, -0.7, -3.0));
+
 	model->setPosition(0, 0, 0);
+
+	minigunRotation = Ogre::Real(Ogre::Math::PI);
 
 	// Create the camera nodes
 	FPcameraNode = model->createChildSceneNode();
@@ -63,6 +71,37 @@ void Player::update(Ogre::Real& deltaTime)
 	rearRotor->rotate(rearRotorQuat);
 
 
+	// Rotating the Gatling gun
+	
+	// Get the quaternion representing our current look location
+	Ogre::Quaternion lookQ;
+	Ogre::Quaternion curQ;
+	if (curCamMode == CameraMode::FirstPerson)
+	{
+		curQ = minigunNode->getOrientation();
+		lookQ = FPcameraNode->getOrientation();
+
+		curQ = Ogre::Quaternion::Slerp(
+			minigunRotation * deltaTime,
+			curQ,
+			lookQ,
+			true);
+
+		minigunNode->setOrientation(curQ);
+	}
+	else if (curCamMode == CameraMode::ThirdPerson)
+	{
+		curQ = minigunNode->_getDerivedOrientation();
+		lookQ = TPcameraNode->_getDerivedOrientation();
+
+		curQ = Ogre::Quaternion::Slerp(
+			minigunRotation * deltaTime,
+			curQ,
+			lookQ,
+			true);
+
+		minigunNode->_setDerivedOrientation(curQ);
+	}
 	 
 	/*                          Movement                                     */
 	{
@@ -158,5 +197,13 @@ void Player::update(Ogre::Real& deltaTime)
 	}
 }
 
-Ogre::SceneNode* Player::getFPCameraNode() { return FPcameraNode; }
-Ogre::SceneNode* Player::getTPCameraNode() { return TPcameraNode; }
+Ogre::SceneNode* Player::getFPCameraNode()
+{
+	curCamMode = CameraMode::FirstPerson;
+	return FPcameraNode;
+}
+Ogre::SceneNode* Player::getTPCameraNode()
+{
+	curCamMode = CameraMode::ThirdPerson;
+	return TPcameraNode;
+}

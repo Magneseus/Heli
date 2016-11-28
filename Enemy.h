@@ -13,7 +13,7 @@ public:
 
 protected:
 	// Firing function
-	virtual void fire();
+	virtual void fire() = 0;
 
 	GameEntity* PlayerEnt;
 	Ogre::SceneNode* turretNode;

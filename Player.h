@@ -53,6 +53,12 @@ private:
 	// Scene nodes for sub-objects
 	Ogre::SceneNode* FPcameraNode;
 	Ogre::SceneNode* TPcameraNode;
+	enum CameraMode { FirstPerson, ThirdPerson, COUNT }; // This is bad design
+	CameraMode curCamMode;
+
 	Ogre::SceneNode* mainRotor;
 	Ogre::SceneNode* rearRotor;
+
+	Ogre::SceneNode* minigunNode;
+	Ogre::Real minigunRotation;
 };
