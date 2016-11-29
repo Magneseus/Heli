@@ -102,6 +102,27 @@ void Player::update(Ogre::Real& deltaTime)
 
 		minigunNode->_setDerivedOrientation(curQ);
 	}
+
+
+	// TODO: Remove this code
+	// TESTING 
+	Ogre::Vector3 result;
+	std::vector<Ogre::MovableObject*> igList;
+	igList.push_back(minigunNode->getAttachedObject(0));
+	igList.push_back(model->getAttachedObject(0));
+	if (ORay->RaycastFromPoint(minigunNode->_getDerivedPosition(), -minigunNode->_getDerivedOrientation().zAxis(), result, igList)) {
+		printf("Your mouse is over the position %f,%f,%f\n", result.x, result.y, result.z);
+	}
+	else {
+		printf("No mouse collision\n Are you looking the sky ?\n");
+	}
+
+	DebugDrawer::getSingleton().drawLine(
+		minigunNode->_getDerivedPosition(),
+		result,
+		Ogre::ColourValue::Red);
+
+	// END OF TESTING
 	 
 	/*                          Movement                                     */
 	{

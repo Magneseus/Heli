@@ -2,9 +2,13 @@
 
 #include <Ogre.h>
 #include "DebugDrawer.h"
+#include "OgreRay.h"
 
 class GameEntity
 {
+public:
+	static OgreRay* ORay;
+
 public:
 	GameEntity(Ogre::SceneManager*, Ogre::SceneNode*);
 	virtual ~GameEntity();

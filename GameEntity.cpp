@@ -1,5 +1,8 @@
 #include "GameEntity.h"
 
+ // Static vars
+OgreRay* GameEntity::ORay = NULL;
+
 GameEntity::GameEntity(Ogre::SceneManager* scnMan_, Ogre::SceneNode* scnNode_)
 	: scnMan(scnMan_),
 	model(scnNode_)

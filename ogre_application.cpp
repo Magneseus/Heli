@@ -36,6 +36,10 @@ void OgreApplication::Init(void)
 	// Run our own initialization steps
 	timeMod = Ogre::Real(1.0);
 
+	// Ray caster
+	OgreRay* ray = new OgreRay(ogre_scene_manager_);
+	GameEntity::ORay = ray;
+
 	// Set up the Sun light
 	SunLight = ogre_scene_manager_->createLight("Sun");
 	SunLight->setType(Ogre::Light::LT_DIRECTIONAL);
@@ -52,9 +56,8 @@ void OgreApplication::Init(void)
 	Ogre::Entity* tmpEnt = ogre_scene_manager_->createEntity("Desert_Ground.mesh");
 	tmpEnt->setMaterialName("Material.001");
 	tmpGround->attachObject(tmpEnt);
-	tmpGround->setScale(200, 25, 200);
+	tmpGround->setScale(500, 1, 500);
 	tmpGround->setPosition(0, -5, 0);
-
 
 	// Camera settings
 	curCameraMode = CameraMode::FirstPerson;
@@ -102,9 +105,7 @@ void OgreApplication::MainLoop(void)
 {
 try {
 	/* Main loop to keep the application going */
-	ogre_root_->clearEventTimes();
-
-	
+	ogre_root_->clearEventTimes();	
 
 	while (!ogre_window_->isClosed())
 	{

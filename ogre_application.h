@@ -20,6 +20,7 @@
 #include "Tank.h"
 #include "Jeep.h"
 #include "AATower.h"
+#include "OgreRay.h"
 
 namespace ogre_application {
 	/* A useful type to define */
@@ -133,15 +134,15 @@ namespace ogre_application {
 		const bool window_full_screen_g = false;
 
 		/* Viewport and camera settings */
-		float viewport_width_g = 0.95f;
-		float viewport_height_g = 0.95f;
+		float viewport_width_g = 1.0f;
+		float viewport_height_g = 1.0f;
 		float viewport_left_g = (1.0f - viewport_width_g) * 0.5f;
 		float viewport_top_g = (1.0f - viewport_height_g) * 0.5f;
 		unsigned short viewport_z_order_g = 100;
 		const Ogre::ColourValue viewport_background_color_g = Ogre::ColourValue(0.0, 0.0, 0.0);
 		float camera_near_clip_distance_g = 0.01f;
 		float camera_far_clip_distance_g = 10000.0f;
-		Ogre::Vector3 camera_position_g = Ogre::Vector3(0.5, 0.5, 5.5);
+		Ogre::Vector3 camera_position_g = Ogre::Vector3(0.0, 0.0, 0.0);
 		Ogre::Vector3 camera_look_at_g = Ogre::Vector3(0.0, 0.0, 0.0);
 		Ogre::Vector3 camera_up_g = Ogre::Vector3(0.0, 1.0, 0.0);
 

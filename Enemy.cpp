@@ -117,8 +117,9 @@ void Enemy::update(Ogre::Real& deltaTime)
 
 
 	// Check if we want to fire
-	if (turOrient.zAxis().angleBetween(dirLook) < Ogre::Real(0.1))
+	if (turOrient.zAxis().angleBetween(dirLook) < Ogre::Radian(Ogre::Real(0.1)))
 	{
-		weapon->fire(deltaTime);
+		if (weapon)
+			weapon->fire(deltaTime);
 	}
 }
