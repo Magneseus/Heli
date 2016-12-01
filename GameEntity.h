@@ -3,6 +3,7 @@
 #include <Ogre.h>
 #include "DebugDrawer.h"
 #include "OgreRay.h"
+#include "Collision.h"
 
 class GameEntity
 {
@@ -23,6 +24,8 @@ public:
 protected:
 	Ogre::SceneNode* model;
 	Ogre::SceneManager* scnMan;
+
+	CollisionBounds col;
 
 private:
 };

@@ -46,6 +46,28 @@ Player::Player(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode)
 	velocity = Ogre::Vector3(0.0, 0.0, 0.0);
 	acceleration = Ogre::Real(800.0);
 	rotAcceleration = Ogre::Real(1.0);
+
+
+
+	// Collision values
+
+	// TODO REMOVE THIS
+	colBox2 = new sBox(
+		Ogre::Vector3(-0.5, -0.8, 3.0),
+		Ogre::Vector3(1.0, 0.0, 0.0),
+		Ogre::Vector3(0.0, 1.5, 0.0),
+		Ogre::Vector3(0.0, 0.0, 7.0));
+	col.addShape(colBox2);
+
+	colBox = new sBox(
+		Ogre::Vector3(-1.5, -1.0, -3.0),
+		Ogre::Vector3(3.0, 0.0, 0.0),
+		Ogre::Vector3(0.0, 2.5, 0.0),
+		Ogre::Vector3(0.0, 0.0, 6.0));
+
+	col.addShape(colBox);
+
+	// END OF TESTING
 }
 
 
@@ -103,27 +125,6 @@ void Player::update(Ogre::Real& deltaTime)
 		minigunNode->_setDerivedOrientation(curQ);
 	}
 
-
-	// TODO: Remove this code
-	// TESTING 
-	Ogre::Vector3 result;
-	std::vector<Ogre::MovableObject*> igList;
-	igList.push_back(minigunNode->getAttachedObject(0));
-	igList.push_back(model->getAttachedObject(0));
-	if (ORay->RaycastFromPoint(minigunNode->_getDerivedPosition(), -minigunNode->_getDerivedOrientation().zAxis(), result, igList)) {
-		printf("Your mouse is over the position %f,%f,%f\n", result.x, result.y, result.z);
-	}
-	else {
-		printf("No mouse collision\n Are you looking the sky ?\n");
-	}
-
-	DebugDrawer::getSingleton().drawLine(
-		minigunNode->_getDerivedPosition(),
-		result,
-		Ogre::ColourValue::Red);
-
-	// END OF TESTING
-	 
 	/*                          Movement                                     */
 	{
 		// Set the momentum
@@ -168,8 +169,8 @@ void Player::update(Ogre::Real& deltaTime)
 		if (accel.squaredLength() > Ogre::Real(0.0))
 		{
 			velocity = Ogre::Math::lerp(
-				velocity, 
-				Ogre::Vector3(velocity.x, 0.0, velocity.z), 
+				velocity,
+				Ogre::Vector3(velocity.x, 0.0, velocity.z),
 				Ogre::Real(0.005) * deltaTime);
 		}
 
@@ -216,6 +217,56 @@ void Player::update(Ogre::Real& deltaTime)
 		model->setOrientation(orientationQ);
 		model->translate(velocity * deltaTime);
 	}
+
+	// Update collision boxes
+	colBox->setRootPosition(model->_getDerivedPosition());
+	colBox->setOrientation(model->_getDerivedOrientation());
+	colBox2->setRootPosition(model->_getDerivedPosition());
+	colBox2->setOrientation(model->_getDerivedOrientation());
+
+
+	Ogre::Vector3* vertices = new Ogre::Vector3[8];
+	std::vector<Ogre::Vector3> vertV = colBox->getCorners();
+	for (int i = 0; i < 8; ++i)
+		vertices[i] = vertV[i];
+
+	DebugDrawer::getSingleton().drawCuboid(
+		vertices,
+		Ogre::ColourValue::Red);
+
+	Ogre::Vector3* vertices2 = new Ogre::Vector3[8];
+	std::vector<Ogre::Vector3> vertV2 = colBox2->getCorners();
+	for (int i = 0; i < 8; ++i)
+		vertices2[i] = vertV2[i];
+
+	DebugDrawer::getSingleton().drawCuboid(
+		vertices2,
+		Ogre::ColourValue::Red);
+
+	delete[] vertices;
+	delete[] vertices2;
+
+
+	// TODO: Remove this code
+	// TESTING 
+	Ogre::Vector3 result;
+	std::vector<Ogre::MovableObject*> igList;
+	igList.push_back(minigunNode->getAttachedObject(0));
+	igList.push_back(model->getAttachedObject(0));
+	if (ORay->RaycastFromPoint(minigunNode->_getDerivedPosition(), -minigunNode->_getDerivedOrientation().zAxis(), result, igList)) {
+		printf("Your mouse is over the position %f,%f,%f\n", result.x, result.y, result.z);
+	}
+	else {
+		printf("No mouse collision\n Are you looking the sky ?\n");
+	}
+
+	DebugDrawer::getSingleton().drawLine(
+		minigunNode->_getDerivedPosition(),
+		result,
+		Ogre::ColourValue::Red);
+
+	// END OF TESTING
+
 }
 
 Ogre::SceneNode* Player::getFPCameraNode()

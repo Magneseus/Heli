@@ -31,6 +31,11 @@ private:
 
 	Ogre::Quaternion orientationQ;
 
+	// Collision vars
+	//TODO TEMP
+	sBox* colBox;
+	sBox* colBox2;
+
 	/*
 	// Rotation angles & vectors
 	Ogre::Radian curPitch;
