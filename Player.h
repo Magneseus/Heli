@@ -5,6 +5,7 @@
 #include "GameEntity.h"
 #include "Weapon.h"
 #include "OGRE/OgreMath.h"
+#include "OIS/OIS.h"
 
 class Player : public GameEntity
 {
@@ -22,6 +23,9 @@ public:
 	int PitchDir;
 	int RollDir;
 	int LiftDir;
+
+	// TODO REMOVE
+	OIS::Mouse* mmouse;
 
 private:
 	// Movement vectors

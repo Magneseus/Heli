@@ -30,6 +30,7 @@ public:
 	OgreRay(Ogre::SceneManager* sceneMgr);
 	bool RaycastFromPoint(const Ogre::Vector3& point, const Ogre::Vector3& normal, Ogre::Vector3& result);
 	bool RaycastFromPoint(const Ogre::Vector3& point, const Ogre::Vector3& normal, Ogre::Vector3& result, std::vector<Ogre::MovableObject*>& ignoreList);
+	bool RaycastFromPoint(const Ogre::Vector3& point, const Ogre::Vector3& normal, Ogre::Vector3& result, std::vector<Ogre::MovableObject*>& ignoreList, Ogre::MovableObject* &resultObj);
 
 private:
 	static void GetMeshInformation(const Ogre::MeshPtr mesh, size_t &vertex_count, Ogre::Vector3*& vertices, size_t& index_count, unsigned long*& indices, const Ogre::Vector3& position, const Ogre::Quaternion& orient, const Ogre::Vector3& scale);

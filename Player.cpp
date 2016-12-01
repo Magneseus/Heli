@@ -250,11 +250,19 @@ void Player::update(Ogre::Real& deltaTime)
 	// TODO: Remove this code
 	// TESTING 
 	Ogre::Vector3 result;
+	Ogre::MovableObject* resultObj = NULL;
 	std::vector<Ogre::MovableObject*> igList;
 	igList.push_back(minigunNode->getAttachedObject(0));
 	igList.push_back(model->getAttachedObject(0));
-	if (ORay->RaycastFromPoint(minigunNode->_getDerivedPosition(), -minigunNode->_getDerivedOrientation().zAxis(), result, igList)) {
+	if (ORay->RaycastFromPoint(minigunNode->_getDerivedPosition(), -minigunNode->_getDerivedOrientation().zAxis(), result, igList, resultObj)) {
 		printf("Your mouse is over the position %f,%f,%f\n", result.x, result.y, result.z);
+
+		if (resultObj && mmouse->getMouseState().buttonDown(OIS::MB_Left))
+		{
+			std::cout << "\n\nTEST\n\n";
+			resultObj->getParentSceneNode()->setVisible(false);
+		}
+
 	}
 	else {
 		printf("No mouse collision\n Are you looking the sky ?\n");

@@ -31,6 +31,14 @@ bool OgreRay::RaycastFromPoint(const Ogre::Vector3& point, const Ogre::Vector3& 
 
 bool OgreRay::RaycastFromPoint(const Ogre::Vector3& point, const Ogre::Vector3& normal, Ogre::Vector3& result, std::vector<Ogre::MovableObject*>& ignoreList)
 {
+	std::vector<Ogre::MovableObject*> L;
+	Ogre::MovableObject* M = NULL;
+
+	return RaycastFromPoint(point, normal, result, L, M);
+}
+
+bool OgreRay::RaycastFromPoint(const Ogre::Vector3& point, const Ogre::Vector3& normal, Ogre::Vector3& result, std::vector<Ogre::MovableObject*>& ignoreList, Ogre::MovableObject* &resultObj)
+{
 	// create the ray to test
 	Ogre::Ray ray(point, normal);
 
@@ -87,6 +95,8 @@ bool OgreRay::RaycastFromPoint(const Ogre::Vector3& point, const Ogre::Vector3& 
 			if (movableType == "ManualObject") {
 				// get the entity to check
 				Ogre::ManualObject* pentity = static_cast<Ogre::ManualObject*>(query_result[qr_idx].movable);
+				resultObj = query_result[qr_idx].movable;
+				std::cout << (resultObj == NULL ? "false" : "true");
 				// get the mesh information
 				GetMeshInformation(pentity, vertex_count, vertices, index_count, indices,
 					pentity->getParentNode()->_getDerivedPosition(),
@@ -97,6 +107,7 @@ bool OgreRay::RaycastFromPoint(const Ogre::Vector3& point, const Ogre::Vector3& 
 			else if (movableType == "Entity") {
 				// get the entity to check
 				Ogre::Entity *pentity = static_cast<Ogre::Entity*>(query_result[qr_idx].movable);
+				resultObj = query_result[qr_idx].movable;
 				// get the mesh information
 				GetMeshInformation(pentity, vertex_count, vertices, index_count, indices,
 					pentity->getParentNode()->_getDerivedPosition(),
@@ -139,10 +150,10 @@ bool OgreRay::RaycastFromPoint(const Ogre::Vector3& point, const Ogre::Vector3& 
 	if (closest_distance >= 0.0f) {
 		// raycast success
 		result = closest_result;
-		std::cout << closest_distance;
 		return true;
 	}
 	// raycast failed
+	resultObj = NULL;
 	return false;
 }
 
