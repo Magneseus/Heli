@@ -72,7 +72,6 @@ void OgreApplication::Init(void)
 	// Spawn the player
 	Ogre::SceneNode* tmp = ogre_scene_manager_->getRootSceneNode()->createChildSceneNode();
 	PlayerEntity = new Player(ogre_scene_manager_, tmp);
-	PlayerEntity->mmouse = mouse_;
 	GameEntityList.push_back(PlayerEntity);
 
 	if (curCameraMode == CameraMode::FirstPerson)

@@ -67,6 +67,9 @@ Player::Player(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode)
 
 	col.addShape(colBox);
 
+	colSphere = new sSphere(Ogre::Sphere(Ogre::Vector3(-4.0, 0.0, 0.0), sReal(2.0)));
+	col.addShape(colSphere);
+
 	// END OF TESTING
 }
 
@@ -174,77 +177,16 @@ void Player::update(Ogre::Real& deltaTime)
 				Ogre::Real(0.005) * deltaTime);
 		}
 
-		// Generate the proper quaternions
-		/*
-		Ogre::Quaternion _pitch;
-		curPitch += Ogre::Radian(rotAcceleration * deltaTime * PitchDir);
-		curPitch = Ogre::Math::Clamp(curPitch, minPitch, maxPitch);
-		_pitch.FromAngleAxis(curPitch, pitchAxis);
-
-		Ogre::Quaternion _roll;
-		curRoll += Ogre::Radian(rotAcceleration * deltaTime * RollDir);
-		curRoll = Ogre::Math::Clamp(curRoll, minRoll, maxRoll);
-		_roll.FromAngleAxis(curRoll, rollAxis);
-
-		Ogre::Quaternion _yaw;
-		curYaw += Ogre::Radian(rotAcceleration * deltaTime * YawDir);
-		_yaw.FromAngleAxis(curYaw, yawAxis);
-
-		std::cout << "P: " << pitchAxis << std::endl;
-		std::cout << "R: " << rollAxis << std::endl;
-		std::cout << "Y: " << yawAxis << std::endl << std::endl;
-
-
-		// Generate the resulting combined Quaternion
-		Ogre::Quaternion endQ = _pitch * _roll *_yaw;
-
-		// Calculate the new velocity
-		newVel = _pitch * _roll * newVel;
-		velocity += newVel;
-		// Apply gravity
-		//velocity += Ogre::Vector3(0.0, -0.1, 0.0) * deltaTime;
-
-		// Update the axes
-		pitchAxis = endQ * Ogre::Vector3::UNIT_X;
-		pitchAxis.normalise();
-		rollAxis = endQ * Ogre::Vector3::UNIT_Z;
-		rollAxis.normalise();
-		yawAxis = endQ * Ogre::Vector3::UNIT_Y;
-		yawAxis.normalise();
-		*/
-
 		// Apply the orientation and translation
 		model->setOrientation(orientationQ);
 		model->translate(velocity * deltaTime);
 	}
 
 	// Update collision boxes
-	colBox->setRootPosition(model->_getDerivedPosition());
-	colBox->setOrientation(model->_getDerivedOrientation());
-	colBox2->setRootPosition(model->_getDerivedPosition());
-	colBox2->setOrientation(model->_getDerivedOrientation());
+	col.setPosition(model->_getDerivedPosition());
+	col.setOrientation(model->_getDerivedOrientation());
 
-
-	Ogre::Vector3* vertices = new Ogre::Vector3[8];
-	std::vector<Ogre::Vector3> vertV = colBox->getCorners();
-	for (int i = 0; i < 8; ++i)
-		vertices[i] = vertV[i];
-
-	DebugDrawer::getSingleton().drawCuboid(
-		vertices,
-		Ogre::ColourValue::Red);
-
-	Ogre::Vector3* vertices2 = new Ogre::Vector3[8];
-	std::vector<Ogre::Vector3> vertV2 = colBox2->getCorners();
-	for (int i = 0; i < 8; ++i)
-		vertices2[i] = vertV2[i];
-
-	DebugDrawer::getSingleton().drawCuboid(
-		vertices2,
-		Ogre::ColourValue::Red);
-
-	delete[] vertices;
-	delete[] vertices2;
+	col.DebugDraw(Ogre::ColourValue::Green);
 
 
 	// TODO: Remove this code
@@ -256,13 +198,6 @@ void Player::update(Ogre::Real& deltaTime)
 	igList.push_back(model->getAttachedObject(0));
 	if (ORay->RaycastFromPoint(minigunNode->_getDerivedPosition(), -minigunNode->_getDerivedOrientation().zAxis(), result, igList, resultObj)) {
 		printf("Your mouse is over the position %f,%f,%f\n", result.x, result.y, result.z);
-
-		if (resultObj && mmouse->getMouseState().buttonDown(OIS::MB_Left))
-		{
-			std::cout << "\n\nTEST\n\n";
-			resultObj->getParentSceneNode()->setVisible(false);
-		}
-
 	}
 	else {
 		printf("No mouse collision\n Are you looking the sky ?\n");

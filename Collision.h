@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Ogre.h>
+#include "DebugDrawer.h"
 
 /*
 This is a header of functions that will return the point of intersection
@@ -28,7 +29,20 @@ class CollisionShape
 public:
 	virtual bool intersects(CollisionShape* other) = 0;
 
+	virtual void rootTranslate(const Ogre::Vector3& trans);
+	virtual void setRootPosition(Ogre::Vector3 _rpos);
+	virtual Ogre::Vector3 getRootPosition();
+	virtual void rotate(const Ogre::Quaternion& rot);
+	virtual void setOrientation(Ogre::Quaternion _orient);
+	virtual Ogre::Quaternion getOrientation();
+
+	virtual void DebugDraw(Ogre::ColourValue col = Ogre::ColourValue::Red) = 0;
+
 	ShapeType type;
+
+protected:
+	Ogre::Vector3 rpos;
+	Ogre::Quaternion orient;
 };
 
 // A class representing a sphere
@@ -37,22 +51,24 @@ class sSphere : public CollisionShape
 public:
 	sSphere(Ogre::Sphere);
 
-	virtual bool intersects(CollisionShape* other);
+	// Virtual functions from CollisionShape
+	virtual bool intersects(CollisionShape* other) override;
+	virtual void DebugDraw(Ogre::ColourValue col = Ogre::ColourValue::Red);
 
+	virtual Ogre::Vector3 getRootPosition() override;
+
+	// Other movement functions
 	inline void translate(const Ogre::Vector3& trans)
 	{
 		sphere.setCenter(sphere.getCenter() + trans);
 	}
-
-	inline void rootTranslate(const Ogre::Vector3& trans) { rpos += trans; }
-	inline void setRootPosition(Ogre::Vector3 _rpos) { rpos = _rpos; }
-
 	inline void setCenter(Ogre::Vector3 _center) { sphere.setCenter(_center); }
+	
+	// Getters
 	inline const Ogre::Vector3& getCenter() { return sphere.getCenter(); };
 	inline sReal getRadius() { return sphere.getRadius(); };
 
 private:
-	Ogre::Vector3 rpos;
 	Ogre::Sphere sphere;
 };
 
@@ -62,24 +78,26 @@ class sBox : public CollisionShape
 public:
 	sBox(Ogre::Vector3 p, Ogre::Vector3 x, Ogre::Vector3 y, Ogre::Vector3 z);
 
-	virtual bool intersects(CollisionShape* other);
+	// Virtual functions
+	virtual bool intersects(CollisionShape* other) override;
+	virtual void rootTranslate(const Ogre::Vector3& trans) override;
+	virtual void setRootPosition(Ogre::Vector3 _rpos) override;
+	virtual void setOrientation(Ogre::Quaternion _orient) override;
+	virtual void rotate(const Ogre::Quaternion& quat) override;
 
+	virtual void DebugDraw(Ogre::ColourValue col = Ogre::ColourValue::Red);
+
+	// Other functions
 	bProjection project(const Ogre::Vector3&);
-
-	void rootTranslate(const Ogre::Vector3& trans);
-	void translate(const Ogre::Vector3& trans);
-	void rotate(const Ogre::Quaternion& quat);
 	void refreshPoints();
 
-	// Setters
+	// Other movement functions
+	void translate(const Ogre::Vector3& trans);
 	void setPosition(Ogre::Vector3 _pos);
-	void setRootPosition(const Ogre::Vector3& _rpos);
-	void setOrientation(Ogre::Quaternion _orient);
 	
 	// Getters
 	inline const std::vector<Ogre::Vector3>& getCorners() { return corners; }
-	inline const Ogre::Vector3& getPosition()  { return pos; }
-	inline const Ogre::Vector3& getRootPosition() { return rpos; }
+	inline const Ogre::Vector3& getPosition() { return pos; }
 	inline Ogre::Vector3 getUpAxis()    { return upVec.normalisedCopy(); }
 	inline Ogre::Vector3 getOuterAxis() { return otVec.normalisedCopy(); }
 	inline Ogre::Vector3 getRightAxis() { return rtVec.normalisedCopy(); }
@@ -88,8 +106,6 @@ private:
 	std::vector<Ogre::Vector3> corners;
 	
 	Ogre::Vector3 pos;
-	Ogre::Vector3 rpos;
-	Ogre::Quaternion orient;
 
 	Ogre::Vector3 upVec; Ogre::Vector3 origUpVec;
 	Ogre::Vector3 otVec; Ogre::Vector3 origOtVec;
@@ -104,24 +120,17 @@ public:
 	CollisionBounds();
 	CollisionBounds(std::vector<CollisionShape*> newShapes);
 
-	inline bool intersects(CollisionBounds& other)
-	{
-		std::vector<CollisionShape*> oshapes = other.getShapes();
+	bool intersects(CollisionBounds& other);
+	void DebugDraw(Ogre::ColourValue col = Ogre::ColourValue::Red);
 
-		// Check all combinations of shapes for intersection
-		for (auto it = shapes.begin(); it != shapes.end(); ++it)
-		{
-			for (auto itt = oshapes.begin(); itt != oshapes.end(); ++itt)
-			{
-				// If any are intersecting, return true
-				if ((*it)->intersects((*itt)))
-					return true;
-			}
-		}
+	// Movement functions
+	void setPosition(Ogre::Vector3 _pos);
+	void setOrientation(Ogre::Quaternion _orient);
+	
+	inline const Ogre::Vector3& getPosition() { return groupPos; }
+	inline const Ogre::Quaternion& getOrientation() { return groupOrient; }
 
-		return false;
-	}
-
+	// Inline vector functions
 	inline std::vector<CollisionShape*>& getShapes()
 	{
 		return shapes;
@@ -137,11 +146,11 @@ public:
 		shapes.push_back(shape);
 	}
 
-	Ogre::Vector3 groupPos;
-	Ogre::Quaternion groupOrient;
-
 private:
 	std::vector<CollisionShape*> shapes;
+
+	Ogre::Vector3 groupPos;
+	Ogre::Quaternion groupOrient;
 };
 
 

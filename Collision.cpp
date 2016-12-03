@@ -71,6 +71,37 @@ bool boxToBox(sBox* B1, sBox* B2)
 
 
 
+// Collision Shape Class Functions
+void CollisionShape::rootTranslate(const Ogre::Vector3& trans)
+{
+	rpos += trans;
+}
+
+void CollisionShape::setRootPosition(Ogre::Vector3 _rpos)
+{
+	rpos = _rpos;
+}
+
+Ogre::Vector3 CollisionShape::getRootPosition()
+{
+	return rpos;
+}
+
+void CollisionShape::rotate(const Ogre::Quaternion& rot)
+{
+	orient = rot * orient;
+}
+
+void CollisionShape::setOrientation(Ogre::Quaternion _orient)
+{
+	orient = _orient;
+}
+
+Ogre::Quaternion CollisionShape::getOrientation()
+{
+	return orient;
+}
+
 
 // Sphere Class implementations
 
@@ -100,6 +131,19 @@ bool sSphere::intersects(CollisionShape* other)
 	}
 
 	return false;
+}
+
+void sSphere::DebugDraw(Ogre::ColourValue col)
+{
+	DebugDrawer::getSingleton().drawSphere(
+		getRootPosition(),
+		getRadius(),
+		col);
+}
+
+Ogre::Vector3 sSphere::getRootPosition()
+{
+	return rpos + (orient * getCenter());
 }
 
 
@@ -184,6 +228,19 @@ bool sBox::intersects(CollisionShape* other)
 	return false;
 }
 
+void sBox::DebugDraw(Ogre::ColourValue col)
+{
+	Ogre::Vector3* vertices = new Ogre::Vector3[8];
+	for (int i = 0; i < 8; ++i)
+		vertices[i] = corners[i];
+
+	DebugDrawer::getSingleton().drawCuboid(
+		vertices,
+		col);
+
+	delete[] vertices;
+}
+
 void sBox::translate(const Ogre::Vector3& trans)
 {
 	pos += trans;
@@ -215,7 +272,7 @@ void sBox::setPosition(Ogre::Vector3 _pos)
 	refreshPoints();
 }
 
-void sBox::setRootPosition(const Ogre::Vector3& _rpos)
+void sBox::setRootPosition(Ogre::Vector3 _rpos)
 {
 	rpos = _rpos;
 	refreshPoints();
@@ -237,7 +294,7 @@ void sBox::setOrientation(Ogre::Quaternion _orient)
 
 
 
-// Collision Bounds
+// Collision Bounds Constructors
 
 CollisionBounds::CollisionBounds()
 {
@@ -248,4 +305,51 @@ CollisionBounds::CollisionBounds(std::vector<CollisionShape*> newShapes)
 	: shapes(newShapes)
 {
 
+}
+
+
+bool CollisionBounds::intersects(CollisionBounds& other)
+{
+	std::vector<CollisionShape*> oshapes = other.getShapes();
+
+	// Check all combinations of shapes for intersection
+	for (auto it = shapes.begin(); it != shapes.end(); ++it)
+	{
+		for (auto itt = oshapes.begin(); itt != oshapes.end(); ++itt)
+		{
+			// If any are intersecting, return true
+			if ((*it)->intersects((*itt)))
+				return true;
+		}
+	}
+
+	return false;
+}
+
+void CollisionBounds::setPosition(Ogre::Vector3 _pos)
+{
+	groupPos = _pos;
+
+	for (auto it = shapes.begin(); it != shapes.end(); ++it)
+	{
+		(*it)->setRootPosition(_pos);
+	}
+}
+
+void CollisionBounds::setOrientation(Ogre::Quaternion _orient)
+{
+	groupOrient = _orient;
+
+	for (auto it = shapes.begin(); it != shapes.end(); ++it)
+	{
+		(*it)->setOrientation(_orient);
+	}
+}
+
+void CollisionBounds::DebugDraw(Ogre::ColourValue col)
+{
+	for (auto it = shapes.begin(); it != shapes.end(); ++it)
+	{
+		(*it)->DebugDraw(col);
+	}
 }

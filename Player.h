@@ -24,9 +24,6 @@ public:
 	int RollDir;
 	int LiftDir;
 
-	// TODO REMOVE
-	OIS::Mouse* mmouse;
-
 private:
 	// Movement vectors
 	Ogre::Vector3 velocity;
@@ -39,17 +36,7 @@ private:
 	//TODO TEMP
 	sBox* colBox;
 	sBox* colBox2;
-
-	/*
-	// Rotation angles & vectors
-	Ogre::Radian curPitch;
-	Ogre::Radian curRoll;
-	Ogre::Radian curYaw;
-
-	Ogre::Vector3 pitchAxis;
-	Ogre::Vector3 rollAxis;
-	Ogre::Vector3 yawAxis;
-	*/
+	sSphere* colSphere;
 
 	// Movement binding values
 	Ogre::Radian maxPitch = Ogre::Radian(Ogre::Real(_PI / 8.0));
