@@ -15,6 +15,16 @@ AATower::AATower(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode, GameEnt
 
 	prefDistance = Ogre::Real(-1.0);
 	turretTurningSpeed = Ogre::Real(0.5);
+
+	// Collisions vars
+	sBox* colBox;
+
+	colBox = new sBox(
+		Ogre::Vector3(-2.0, 0.0, -2.0),
+		Ogre::Vector3(4.0, 0.0, 0.0),
+		Ogre::Vector3(0.0, 4.0, 0.0),
+		Ogre::Vector3(0.0, 0.0, 4.0));
+	col.addShape(colBox);
 }
 
 AATower::~AATower()
@@ -61,4 +71,15 @@ void AATower::update(Ogre::Real& deltaTime)
 
 		turretNode->setOrientation(orient);
 	}
+
+	// Update collision boxes
+	col.setPosition(model->_getDerivedPosition());
+	col.setOrientation(model->_getDerivedOrientation());
+
+	// check if we're colliding and display
+	Ogre::ColourValue Ccolor = Ogre::ColourValue::Green;
+	if (isCollided)
+		Ccolor = Ogre::ColourValue::Red;
+
+	col.DebugDraw(Ccolor);
 }

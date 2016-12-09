@@ -32,12 +32,6 @@ private:
 
 	Ogre::Quaternion orientationQ;
 
-	// Collision vars
-	//TODO TEMP
-	sBox* colBox;
-	sBox* colBox2;
-	sSphere* colSphere;
-
 	// Movement binding values
 	Ogre::Radian maxPitch = Ogre::Radian(Ogre::Real(_PI / 8.0));
 	Ogre::Radian minPitch = Ogre::Radian(Ogre::Real(-_PI / 4.0));

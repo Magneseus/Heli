@@ -15,11 +15,15 @@ public:
 	virtual ~GameEntity();
 
 	virtual void update(Ogre::Real& deltaTime);
+	
+	bool collide(GameEntity* otherEnt);
+	virtual void onCollide();
 
 	Ogre::SceneNode* getSceneNode();
 	Ogre::SceneNode* setSceneNode(Ogre::SceneNode*);
 
 	bool doesTick;
+	bool isCollided;
 
 protected:
 	Ogre::SceneNode* model;

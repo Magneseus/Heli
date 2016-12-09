@@ -50,14 +50,13 @@ Player::Player(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode)
 
 
 	// Collision values
-
-	// TODO REMOVE THIS
-	colBox2 = new sBox(
+	sBox* colBox;
+	colBox = new sBox(
 		Ogre::Vector3(-0.5, -0.8, 3.0),
 		Ogre::Vector3(1.0, 0.0, 0.0),
 		Ogre::Vector3(0.0, 1.5, 0.0),
 		Ogre::Vector3(0.0, 0.0, 7.0));
-	col.addShape(colBox2);
+	col.addShape(colBox);
 
 	colBox = new sBox(
 		Ogre::Vector3(-1.5, -1.0, -3.0),
@@ -66,11 +65,6 @@ Player::Player(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode)
 		Ogre::Vector3(0.0, 0.0, 6.0));
 
 	col.addShape(colBox);
-
-	colSphere = new sSphere(Ogre::Sphere(Ogre::Vector3(-4.0, 0.0, 0.0), sReal(2.0)));
-	col.addShape(colSphere);
-
-	// END OF TESTING
 }
 
 
@@ -186,7 +180,11 @@ void Player::update(Ogre::Real& deltaTime)
 	col.setPosition(model->_getDerivedPosition());
 	col.setOrientation(model->_getDerivedOrientation());
 
-	col.DebugDraw(Ogre::ColourValue::Green);
+	Ogre::ColourValue Ccolor = Ogre::ColourValue::Green;
+	if (isCollided)
+		Ccolor = Ogre::ColourValue::Red;
+
+	col.DebugDraw(Ccolor);
 
 
 	// TODO: Remove this code

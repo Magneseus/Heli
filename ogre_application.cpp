@@ -151,6 +151,16 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 	for (auto it = GameEntityList.begin(); it != GameEntityList.end(); ++it)
 	{
 		(*it)->update(deltaTimeAltered);
+		(*it)->isCollided = false;
+	}
+
+	// Collide the entities
+	for (int i = 0; i < GameEntityList.size(); ++i)
+	{
+		for (int j = i + 1; j < GameEntityList.size(); ++j)
+		{
+			GameEntityList[i]->collide(GameEntityList[j]);
+		}
 	}
 
 

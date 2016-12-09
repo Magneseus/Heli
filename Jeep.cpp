@@ -22,6 +22,16 @@ Jeep::Jeep(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode, GameEntity* _
 	prefDistance = Ogre::Real(200.0);
 
 	timeOutWhenCaughtUp = Ogre::Real(4.0);
+
+	// Collisions vars
+	sBox* colBox;
+
+	colBox = new sBox(
+		Ogre::Vector3(-1.5, 0.0, -2.5),
+		Ogre::Vector3(3.0, 0.0, 0.0),
+		Ogre::Vector3(0.0, 2.0, 0.0),
+		Ogre::Vector3(0.0, 0.0, 5.0));
+	col.addShape(colBox);
 }
 
 Jeep::~Jeep()
@@ -37,4 +47,15 @@ void Jeep::fire()
 void Jeep::update(Ogre::Real& deltaTime)
 {
 	Enemy::update(deltaTime);
+
+	// Update collision boxes
+	col.setPosition(model->_getDerivedPosition());
+	col.setOrientation(model->_getDerivedOrientation());
+
+	// check if we're colliding and display
+	Ogre::ColourValue Ccolor = Ogre::ColourValue::Green;
+	if (isCollided)
+		Ccolor = Ogre::ColourValue::Red;
+
+	col.DebugDraw(Ccolor);
 }

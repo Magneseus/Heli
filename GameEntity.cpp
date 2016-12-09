@@ -5,7 +5,9 @@ OgreRay* GameEntity::ORay = NULL;
 
 GameEntity::GameEntity(Ogre::SceneManager* scnMan_, Ogre::SceneNode* scnNode_)
 	: scnMan(scnMan_),
-	model(scnNode_)
+	model(scnNode_),
+	doesTick(true),
+	isCollided(false)
 {
 
 }
@@ -24,6 +26,27 @@ GameEntity::~GameEntity()
 void GameEntity::update(Ogre::Real& deltaTime)
 {
 
+}
+
+void GameEntity::onCollide()
+{
+
+}
+
+
+bool GameEntity::collide(GameEntity* otherEnt)
+{
+	if (otherEnt->col.intersects(this->col))
+	{
+		otherEnt->onCollide();
+		otherEnt->isCollided = true;
+		this->onCollide();
+		this->isCollided = true;
+
+		return true;
+	}
+
+	return false;
 }
 
 
