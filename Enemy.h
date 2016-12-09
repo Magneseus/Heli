@@ -32,6 +32,10 @@ protected:
 	Ogre::Real timerC;
 	bool timeOutC;
 
+	// Health
+	int hp;
+	virtual void onCollide(GameEntity* otherEnt, Ogre::String tag);
+
 private:
 	
 };

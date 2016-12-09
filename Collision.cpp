@@ -353,3 +353,8 @@ void CollisionBounds::DebugDraw(Ogre::ColourValue col)
 		(*it)->DebugDraw(col);
 	}
 }
+
+void CollisionBounds::clear()
+{
+	shapes.clear();
+}

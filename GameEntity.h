@@ -17,13 +17,15 @@ public:
 	virtual void update(Ogre::Real& deltaTime);
 	
 	bool collide(GameEntity* otherEnt);
-	virtual void onCollide();
+	virtual void onCollide(GameEntity* otherEnt, Ogre::String tag);
 
 	Ogre::SceneNode* getSceneNode();
 	Ogre::SceneNode* setSceneNode(Ogre::SceneNode*);
 
 	bool doesTick;
 	bool isCollided;
+
+	Ogre::String tag;
 
 protected:
 	Ogre::SceneNode* model;

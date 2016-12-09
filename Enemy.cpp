@@ -13,7 +13,8 @@ Enemy::Enemy(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode, GameEntity*
 	timeOutWhenCaughtUp(0.0),
 	timerC(0.0),
 	timeOutC(false),
-	weapon(NULL)
+	weapon(NULL),
+	hp(0)
 {
 }
 
@@ -21,6 +22,22 @@ Enemy::~Enemy()
 {
 	if (weapon)
 		delete weapon;
+}
+
+void Enemy::onCollide(GameEntity* otherEnt, Ogre::String tag)
+{
+	// Player laser
+	if (tag == Ogre::String("plaser"))
+	{
+		hp -= 1;
+	}
+
+	// If we're dead, turn invis
+	if (hp <= 0)
+	{
+		model->setVisible(false);
+		col.clear();
+	}
 }
 
 void Enemy::update(Ogre::Real& deltaTime)
@@ -119,7 +136,8 @@ void Enemy::update(Ogre::Real& deltaTime)
 	// Check if we want to fire
 	if (turOrient.zAxis().angleBetween(dirLook) < Ogre::Radian(Ogre::Real(0.1)))
 	{
-		if (weapon)
-			weapon->fire(deltaTime);
+		// TODO
+		//if (weapon)
+			//weapon->fire(deltaTime, getSceneNode()->getder);
 	}
 }

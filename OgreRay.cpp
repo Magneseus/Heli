@@ -96,7 +96,6 @@ bool OgreRay::RaycastFromPoint(const Ogre::Vector3& point, const Ogre::Vector3& 
 				// get the entity to check
 				Ogre::ManualObject* pentity = static_cast<Ogre::ManualObject*>(query_result[qr_idx].movable);
 				resultObj = query_result[qr_idx].movable;
-				std::cout << (resultObj == NULL ? "false" : "true");
 				// get the mesh information
 				GetMeshInformation(pentity, vertex_count, vertices, index_count, indices,
 					pentity->getParentNode()->_getDerivedPosition(),

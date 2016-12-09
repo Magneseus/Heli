@@ -72,7 +72,9 @@ void OgreApplication::Init(void)
 	// Spawn the player
 	Ogre::SceneNode* tmp = ogre_scene_manager_->getRootSceneNode()->createChildSceneNode();
 	PlayerEntity = new Player(ogre_scene_manager_, tmp);
+	PlayerEntity->otherEntities = &GameEntityList;
 	GameEntityList.push_back(PlayerEntity);
+
 
 	if (curCameraMode == CameraMode::FirstPerson)
 		BindCamera(PlayerEntity->getFPCameraNode());
@@ -193,6 +195,11 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 		}
 	}
 
+	// Firing controls
+	if (mouse_->getMouseState().buttonDown(OIS::MB_Left))
+	{
+		PlayerEntity->fireLaser(deltaTimeAltered);
+	}
 
 	// Helicopter Controls
 	{

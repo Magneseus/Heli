@@ -4,6 +4,9 @@
 Player::Player(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode)
 	: GameEntity(_scnMan, _scnNode)
 {
+	// Set the player tag
+	tag = Ogre::String("player");
+
 	// Add the helicopter mesh to the player's node
 	Ogre::Entity* tmpEnt = scnMan->createEntity("Heli.mesh");
 	model->attachObject(tmpEnt);
@@ -191,14 +194,18 @@ void Player::update(Ogre::Real& deltaTime)
 	// TESTING 
 	Ogre::Vector3 result;
 	Ogre::MovableObject* resultObj = NULL;
+
 	std::vector<Ogre::MovableObject*> igList;
 	igList.push_back(minigunNode->getAttachedObject(0));
 	igList.push_back(model->getAttachedObject(0));
+
 	if (ORay->RaycastFromPoint(minigunNode->_getDerivedPosition(), -minigunNode->_getDerivedOrientation().zAxis(), result, igList, resultObj)) {
-		printf("Your mouse is over the position %f,%f,%f\n", result.x, result.y, result.z);
+		//printf("Your mouse is over the position %f,%f,%f\n", result.x, result.y, result.z);
+		otherMovEnt = resultObj;
 	}
 	else {
-		printf("No mouse collision\n Are you looking the sky ?\n");
+		//printf("No mouse collision\n Are you looking the sky ?\n");
+		otherMovEnt = NULL;
 	}
 
 	DebugDrawer::getSingleton().drawLine(
@@ -208,6 +215,52 @@ void Player::update(Ogre::Real& deltaTime)
 
 	// END OF TESTING
 
+}
+
+void Player::onCollide(GameEntity* otherEnt, Ogre::String tag)
+{
+
+}
+
+
+void Player::fireLaser(const Ogre::Real& deltaTime)
+{
+	// If we're actually pointing at something
+	if (otherMovEnt != NULL)
+	{
+		// Get the GameEntity parent
+		for (auto it = otherEntities->begin(); it != otherEntities->end(); ++it)
+		{
+			if (*it != this)
+			{
+				Ogre::SceneNode* s = (*it)->getSceneNode();
+
+				// If we hit the object
+				if (s->getAttachedObject(0) == otherMovEnt)
+				{
+					(*it)->onCollide(this, "plaser");
+					return;
+				}
+
+
+				// Check all sub-nodes as well
+				Ogre::Node::ChildNodeIterator objIt = s->getChildIterator();
+				while (objIt.hasMoreElements())
+				{
+					// If we hit a sub-object
+					Ogre::SceneNode *n = dynamic_cast<Ogre::SceneNode *>(objIt.getNext());
+					if (NULL != n)
+					{
+						if (n->getAttachedObject(0) == otherMovEnt)
+						{
+							(*it)->onCollide(this, "plaser");
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 Ogre::SceneNode* Player::getFPCameraNode()

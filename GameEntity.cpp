@@ -9,7 +9,7 @@ GameEntity::GameEntity(Ogre::SceneManager* scnMan_, Ogre::SceneNode* scnNode_)
 	doesTick(true),
 	isCollided(false)
 {
-
+	tag = Ogre::String("");
 }
 
 
@@ -28,7 +28,7 @@ void GameEntity::update(Ogre::Real& deltaTime)
 
 }
 
-void GameEntity::onCollide()
+void GameEntity::onCollide(GameEntity* otherEnt, Ogre::String tag)
 {
 
 }
@@ -38,9 +38,9 @@ bool GameEntity::collide(GameEntity* otherEnt)
 {
 	if (otherEnt->col.intersects(this->col))
 	{
-		otherEnt->onCollide();
+		otherEnt->onCollide(this, "");
 		otherEnt->isCollided = true;
-		this->onCollide();
+		this->onCollide(otherEnt, "");
 		this->isCollided = true;
 
 		return true;

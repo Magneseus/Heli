@@ -14,6 +14,11 @@ public:
 	~Player();
 
 	void update(Ogre::Real& deltaTime);
+	void fireLaser(const Ogre::Real& deltaTime);
+	virtual void onCollide(GameEntity* otherEnt, Ogre::String tag);
+
+	Ogre::MovableObject* otherMovEnt;
+	std::vector<GameEntity*> *otherEntities;
 
 	Ogre::SceneNode* getFPCameraNode();
 	Ogre::SceneNode* getTPCameraNode();

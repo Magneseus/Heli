@@ -122,6 +122,7 @@ public:
 
 	bool intersects(CollisionBounds& other);
 	void DebugDraw(Ogre::ColourValue col = Ogre::ColourValue::Red);
+	void clear();
 
 	// Movement functions
 	void setPosition(Ogre::Vector3 _pos);

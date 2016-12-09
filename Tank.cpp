@@ -29,6 +29,8 @@ Tank::Tank(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode, GameEntity* _
 		Ogre::Vector3(0.0, 2.0, 0.0),
 		Ogre::Vector3(0.0, 0.0, 7.0));
 	col.addShape(colBox);
+
+	this->hp = 500;
 }
 
 Tank::~Tank()

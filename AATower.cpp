@@ -25,6 +25,8 @@ AATower::AATower(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode, GameEnt
 		Ogre::Vector3(0.0, 4.0, 0.0),
 		Ogre::Vector3(0.0, 0.0, 4.0));
 	col.addShape(colBox);
+
+	this->hp = 200;
 }
 
 AATower::~AATower()
