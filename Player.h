@@ -3,7 +3,6 @@
 #define _PI 3.14159
 
 #include "GameEntity.h"
-#include "Weapon.h"
 #include "OGRE/OgreMath.h"
 #include "OIS/OIS.h"
 
@@ -58,4 +57,7 @@ private:
 
 	Ogre::SceneNode* minigunNode;
 	Ogre::Real minigunRotation;
+	
+	// Health
+	int hp;
 };

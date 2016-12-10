@@ -7,7 +7,7 @@ vertex_program laser_beam/vs glsl
         param_named_auto world_mat world_matrix
         
         param_named timer float 0.0
-        param_named maxTimer float 0.1
+        param_named maxTimer float 0.3
     }
 }
 

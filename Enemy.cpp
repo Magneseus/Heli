@@ -13,15 +13,13 @@ Enemy::Enemy(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode, GameEntity*
 	timeOutWhenCaughtUp(0.0),
 	timerC(0.0),
 	timeOutC(false),
-	weapon(NULL),
 	hp(0)
 {
+	entlist = NULL;
 }
 
 Enemy::~Enemy()
 {
-	if (weapon)
-		delete weapon;
 }
 
 void Enemy::onCollide(GameEntity* otherEnt, Ogre::String tag)
@@ -51,6 +49,13 @@ void Enemy::update(Ogre::Real& deltaTime)
 	Ogre::Vector3 fwdVec = -orient.zAxis();
 	fwdVec.y = Ogre::Real(0.0);
 	fwdVec.normalise();
+
+	// Firing timer
+	if (timeOutF) fireCounter += deltaTime;
+	if (fireCounter > fireStopTime)
+	{
+		timeOutF = false;
+	}
 
 	// Check if we've reached the timeout limit
 	if (timeOutC) timerC += deltaTime;
@@ -136,8 +141,6 @@ void Enemy::update(Ogre::Real& deltaTime)
 	// Check if we want to fire
 	if (turOrient.zAxis().angleBetween(dirLook) < Ogre::Radian(Ogre::Real(0.1)))
 	{
-		// TODO
-		//if (weapon)
-			//weapon->fire(deltaTime, getSceneNode()->getder);
+		this->fire(deltaTime, turretNode->_getDerivedPosition(), PlayerEnt->getSceneNode()->_getDerivedPosition());
 	}
 }

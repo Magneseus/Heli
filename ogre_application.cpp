@@ -89,16 +89,19 @@ void OgreApplication::Init(void)
 	// TMP Spawn enemy
 	tmp = ogre_scene_manager_->getRootSceneNode()->createChildSceneNode();
 	Tank* tmpEnemy = new Tank(ogre_scene_manager_, tmp, PlayerEntity);
+	tmpEnemy->entlist = &GameEntityList;
 	GameEntityList.push_back(tmpEnemy);
 	tmp->setPosition(-10, -5, 0);
 
 	tmp = ogre_scene_manager_->getRootSceneNode()->createChildSceneNode();
 	Jeep* tmpEnemy2 = new Jeep(ogre_scene_manager_, tmp, PlayerEntity);
+	//tmpEnemy2->entlist = &GameEntityList;
 	GameEntityList.push_back(tmpEnemy2);
 	tmp->setPosition(10, -5, 0);
 
 	tmp = ogre_scene_manager_->getRootSceneNode()->createChildSceneNode();
 	AATower* tmpEnemy3 = new AATower(ogre_scene_manager_, tmp, PlayerEntity);
+	//tmpEnemy3->entlist = &GameEntityList;
 	GameEntityList.push_back(tmpEnemy3);
 	tmp->setPosition(0, -5, 10);
 
@@ -157,10 +160,10 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 	GameEntity::PRend->update(deltaTimeAltered);
 
 	// Update all game entities
-	for (auto it = GameEntityList.begin(); it != GameEntityList.end(); ++it)
+	for (int i = 0; i < GameEntityList.size(); ++i)
 	{
-		(*it)->update(deltaTimeAltered);
-		(*it)->isCollided = false;
+		GameEntityList[i]->update(deltaTimeAltered);
+		GameEntityList[i]->isCollided = false;
 	}
 
 	// Collide the entities

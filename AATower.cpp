@@ -34,7 +34,7 @@ AATower::~AATower()
 
 }
 
-void AATower::fire()
+void AATower::fire(const Ogre::Real& deltaTime, const Ogre::Vector3& vec1, const Ogre::Vector3& vec2)
 {
 
 }

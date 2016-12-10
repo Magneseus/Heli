@@ -68,6 +68,9 @@ Player::Player(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode)
 		Ogre::Vector3(0.0, 0.0, 6.0));
 
 	col.addShape(colBox);
+
+	// Health
+	hp = 1000;
 }
 
 
@@ -207,7 +210,7 @@ void Player::update(Ogre::Real& deltaTime)
 	else {
 		//printf("No mouse collision\n Are you looking the sky ?\n");
 		otherMovEnt = NULL;
-		aimLocation = Ogre::Vector3(0.0, 0.0, 0.0);
+		aimLocation = -minigunNode->_getDerivedOrientation().zAxis();
 	}
 
 	DebugDrawer::getSingleton().drawLine(
@@ -221,16 +224,25 @@ void Player::update(Ogre::Real& deltaTime)
 
 void Player::onCollide(GameEntity* otherEnt, Ogre::String tag)
 {
-
+	// Enemy laser
+	if (tag == Ogre::String("elaser"))
+	{
+		hp -= 1;
+	}
 }
 
 
 void Player::fireLaser(const Ogre::Real& deltaTime)
 {
 	// If we're not pointing at the sky fire a laser effect towards the target
-	if (aimLocation != Ogre::Vector3(0.0, 0.0, 0.0))
+	if (otherMovEnt != NULL)
 	{
 		PRend->addParticle("laser", 1.0, minigunNode->_getDerivedPosition(), aimLocation);
+	}
+	else
+	{
+		PRend->addParticle("laser", 1.0, minigunNode->_getDerivedPosition(), 
+			minigunNode->_getDerivedPosition() + (aimLocation * 500.0));
 	}
 	
 	// If we're actually pointing at something

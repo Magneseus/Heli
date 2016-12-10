@@ -1,5 +1,6 @@
 #include "Jeep.h"
 
+
 Jeep::Jeep(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode, GameEntity* _PlayerEnt)
 	: Enemy(_scnMan, _scnNode, _PlayerEnt)
 {
@@ -17,11 +18,17 @@ Jeep::Jeep(Ogre::SceneManager* _scnMan, Ogre::SceneNode* _scnNode, GameEntity* _
 	maxSpeed = Ogre::Real(30.0);
 	curSpeed = Ogre::Real(0.0);
 	turningSpeed = Ogre::Real(2.0);
-	turretTurningSpeed = Ogre::Real(0.9);
+	turretTurningSpeed = Ogre::Real(1.1);
 	minDistance = Ogre::Real(10.0);
 	prefDistance = Ogre::Real(200.0);
 
 	timeOutWhenCaughtUp = Ogre::Real(4.0);
+
+	// Firing mechanics
+	fireCounter = 0.0;
+	fireStopTime = 0.0;
+	fireCooldown = 0.1;
+	timeOutF = false;
 
 	// Collisions vars
 	sBox* colBox;
@@ -41,9 +48,48 @@ Jeep::~Jeep()
 
 }
 
-void Jeep::fire()
+void Jeep::fire(const Ogre::Real& deltaTime, const Ogre::Vector3& vec1, const Ogre::Vector3& vec2)
 {
+	if (!timeOutF)
+	{
+		timeOutF = true;
+		fireStopTime = fireCounter + fireCooldown;
 
+		// Run the hitscan
+		Ogre::Vector3 result;
+		Ogre::MovableObject* resultObj = NULL;
+
+		std::vector<Ogre::MovableObject*> igList;
+		igList.push_back(turretNode->getAttachedObject(0));
+		igList.push_back(model->getAttachedObject(0));
+
+		ORay->RaycastFromPoint(turretNode->_getDerivedPosition(), -turretNode->_getDerivedOrientation().zAxis(), result, igList, resultObj);
+
+		// END OF TESTING
+
+	// If we're not pointing at the sky fire a laser effect towards the target
+		if (resultObj != NULL)
+		{
+			PRend->addParticle("laser", 1.0, turretNode->_getDerivedPosition(), result);
+		}
+		else
+		{
+			PRend->addParticle("laser", 1.0, turretNode->_getDerivedPosition(),
+				turretNode->_getDerivedPosition() + (result * 500.0));
+		}
+
+		// If we're actually pointing at something
+		if (resultObj != NULL)
+		{
+			Ogre::SceneNode* s = PlayerEnt->getSceneNode();
+
+			// If we hit the player
+			if (s->getAttachedObject(0) == resultObj)
+			{
+				PlayerEnt->onCollide(this, "elaser");
+			}
+		}
+	}
 }
 
 void Jeep::update(Ogre::Real& deltaTime)

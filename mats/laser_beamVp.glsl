@@ -23,8 +23,10 @@ void main()
 	
 	float posVal = (timer - startTime) / (endTime - startTime);
 	
-    gl_Position = world_mat * vec4(mix(vec3(0.0,0.0,0.0), vertex, posVal), 1.0);
+	vec3 origin = vec3(world_mat * vec4(0.0, 0.0, 0.0, 1.0));
+	
+    gl_Position = vec4(mix(origin, vertex, posVal), 1.0);
 
     colour_interp = colour;
-    face_dir = world_mat * vec4(vertex, 1.0);
+    face_dir = vec4(vertex, 1.0);
 }
