@@ -129,9 +129,9 @@ namespace ogre_application {
 		/* Main window settings */
 		const Ogre::String window_title_g = "Demo";
 		const Ogre::String custom_window_capacities_g = "";
-		const unsigned int window_width_g = 1600;
-		const unsigned int window_height_g = 900;
-		const bool window_full_screen_g = false;
+		const unsigned int window_width_g = 1920;
+		const unsigned int window_height_g = 1080;
+		const bool window_full_screen_g = true;
 
 		/* Viewport and camera settings */
 		float viewport_width_g = 1.0f;

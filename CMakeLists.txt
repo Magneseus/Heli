@@ -5,11 +5,11 @@ project(HELI)
 
 # Specify project files: header files and source files
 set(HDRS
-	./AATower.h ./Collision.h ./DebugDrawer.h ./Enemy.h ./GameEntity.h ./Jeep.h ./ogre_application.h ./OgreRay.h ./Player.h ./Shapes.h ./Tank.h ./Weapon.h
+	./AATower.h ./Collision.h ./DebugDrawer.h ./Enemy.h ./GameEntity.h ./Jeep.h ./ogre_application.h ./OgreRay.h ./ParticleRenderer.h ./Player.h ./Shapes.h ./Tank.h ./Weapon.h
 )
  
 set(SRCS
-	./AATower.cpp ./Collision.cpp ./DebugDrawer.cpp ./Enemy.cpp ./GameEntity.cpp ./Jeep.cpp ./main.cpp ./ogre_application.cpp ./OgreRay.cpp ./Player.cpp ./Shapes.cpp ./Tank.cpp ./Weapon.cpp
+	./AATower.cpp ./Collision.cpp ./DebugDrawer.cpp ./Enemy.cpp ./GameEntity.cpp ./Jeep.cpp ./main.cpp ./ogre_application.cpp ./OgreRay.cpp ./ParticleRenderer.cpp ./Player.cpp ./Shapes.cpp ./Tank.cpp ./Weapon.cpp
 )
 
 # The rules here are specific to Windows Systems
