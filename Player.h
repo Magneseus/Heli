@@ -29,6 +29,9 @@ public:
 	int RollDir;
 	int LiftDir;
 
+	// Health
+	int hp;
+
 private:
 	// Movement vectors
 	Ogre::Vector3 velocity;
@@ -57,7 +60,4 @@ private:
 
 	Ogre::SceneNode* minigunNode;
 	Ogre::Real minigunRotation;
-	
-	// Health
-	int hp;
 };

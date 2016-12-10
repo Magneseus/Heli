@@ -132,6 +132,11 @@ try {
 			ogre_window_->destroy();
 		}
 	}
+
+	//std::cout << "Type any key to exit: ";
+
+	//char c;
+	//std::cin >> c;
 }
 catch (Ogre::Exception &e) {
 	throw(OgreAppException(std::string("Ogre::Exception: ") + std::string(e.what())));
@@ -173,6 +178,14 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 		{
 			GameEntityList[i]->collide(GameEntityList[j]);
 		}
+	}
+
+	// Check if the player is dead
+	if (PlayerEntity->hp < 0)
+	{
+		std::cout << "\n\n\n                 GAME OVER!\n\n\n";
+		wantToExit = true;
+		return false;
 	}
 
 

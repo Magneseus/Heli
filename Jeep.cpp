@@ -105,5 +105,5 @@ void Jeep::update(Ogre::Real& deltaTime)
 	if (isCollided)
 		Ccolor = Ogre::ColourValue::Red;
 
-	col.DebugDraw(Ccolor);
+	//col.DebugDraw(Ccolor);
 }

@@ -64,7 +64,7 @@ void TankShell::update(Ogre::Real& deltaTime)
 	col.setPosition(model->_getDerivedPosition());
 	col.setOrientation(model->_getDerivedOrientation());
 
-	col.DebugDraw();
+	//col.DebugDraw();
 }
 
 
@@ -164,5 +164,5 @@ void Tank::update(Ogre::Real& deltaTime)
 	if (isCollided)
 		Ccolor = Ogre::ColourValue::Red;
 
-	col.DebugDraw(Ccolor);
+	//col.DebugDraw(Ccolor);
 }
