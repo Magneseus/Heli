@@ -40,6 +40,10 @@ void OgreApplication::Init(void)
 	OgreRay* ray = new OgreRay(ogre_scene_manager_);
 	GameEntity::ORay = ray;
 
+	// Particle Renderer
+	ParticleRenderer* particlerend = new ParticleRenderer(ogre_scene_manager_);
+	GameEntity::PRend = particlerend;
+
 	// Set up the Sun light
 	SunLight = ogre_scene_manager_->createLight("Sun");
 	SunLight->setType(Ogre::Light::LT_DIRECTIONAL);
@@ -148,6 +152,9 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& fe)
 	// Get the delta time
 	Ogre::Real deltaTime = fe.timeSinceLastFrame;
 	Ogre::Real deltaTimeAltered = deltaTime * timeMod;
+
+	// Update the particles
+	GameEntity::PRend->update(deltaTimeAltered);
 
 	// Update all game entities
 	for (auto it = GameEntityList.begin(); it != GameEntityList.end(); ++it)

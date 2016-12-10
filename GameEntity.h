@@ -3,12 +3,14 @@
 #include <Ogre.h>
 #include "DebugDrawer.h"
 #include "OgreRay.h"
+#include "ParticleRenderer.h"
 #include "Collision.h"
 
 class GameEntity
 {
 public:
 	static OgreRay* ORay;
+	static ParticleRenderer* PRend;
 
 public:
 	GameEntity(Ogre::SceneManager*, Ogre::SceneNode*);

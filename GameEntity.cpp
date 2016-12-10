@@ -2,6 +2,7 @@
 
  // Static vars
 OgreRay* GameEntity::ORay = NULL;
+ParticleRenderer* GameEntity::PRend = NULL;
 
 GameEntity::GameEntity(Ogre::SceneManager* scnMan_, Ogre::SceneNode* scnNode_)
 	: scnMan(scnMan_),

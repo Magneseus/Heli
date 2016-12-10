@@ -18,6 +18,7 @@ public:
 	virtual void onCollide(GameEntity* otherEnt, Ogre::String tag);
 
 	Ogre::MovableObject* otherMovEnt;
+	Ogre::Vector3 aimLocation;
 	std::vector<GameEntity*> *otherEntities;
 
 	Ogre::SceneNode* getFPCameraNode();
